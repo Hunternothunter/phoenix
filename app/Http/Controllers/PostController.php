@@ -46,13 +46,13 @@ class PostController extends Controller
         $post->content = $request->input('content');
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
+            $imagePath = $request->file('image')->store('post_images', 'public');
             $post->image = $imagePath;
         }
 
         $post->save();
 
-        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
+        return redirect()->route('dashboard')->with('success', 'Post created successfully.');
     }
 
     // Show the form to edit a post

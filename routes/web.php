@@ -15,21 +15,28 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/dashboard', function () {
-    $user = Auth::user(); // Get the currently authenticated user
-    $posts = Post::with('user')->latest()->get(); // Fetch posts
-    $following = $user->following; // Fetch users the current user is following
+    $user = Auth::user();
+    $posts = Post::with('user')->latest()->get();
+    $following = $user->following;
 
-    // Fetch activities if you have an Activity model or adjust according to your implementation
-    $activities = []; // You might need to implement logic to get activities
-
+    $activities = [];
     return view('dashboard', compact('posts', 'user', 'following', 'activities'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.show');
+
+
+
 Route::middleware('auth')->group(function () {
+    Route::get('/search', [ProfileController::class, 'search'])->name('profile.search');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/posts/{post}/likes', [LikeController::class, 'store'])->name('likes.store');
 });
 
 Route::resource('posts', PostController::class);

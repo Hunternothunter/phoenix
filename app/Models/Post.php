@@ -43,4 +43,12 @@ class Post extends Model
     {
         return $this->hasMany(Like::class);
     }
+    public function likeCount()
+    {
+        return $this->likes()->count();
+    }
+    public function images()
+    {
+        return $this->hasMany(Post::class);
+    }
 }

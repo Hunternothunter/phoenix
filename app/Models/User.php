@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -17,7 +18,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'firstname',
+        'middlename',
+        'lastname',
+        'gender',
+        'birthdate',
+        'mobile_num',
+        'username',
         'email',
         'password',
     ];
@@ -69,6 +76,11 @@ class User extends Authenticatable
         return $this->hasMany(Like::class);
     }
 
+    public function likeCount()
+    {
+        return $this->likes()->count();
+    }
+
     /**
      * Get the followers for the user.
      */
@@ -114,6 +126,12 @@ class User extends Authenticatable
      */
     public function unreadMessagesCount()
     {
+        // Check if a user is authenticated using Auth::check()
+        if (!Auth::check()) {
+            return 0; // Return 0 if no user is logged in
+        }
+
+        // If the user is authenticated, count their unread messages
         return $this->unreadMessages()->count();
     }
 

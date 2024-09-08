@@ -14,16 +14,21 @@ class LikeController extends Controller
     // Like a post
     public function store(Post $post)
     {
-        if (Like::where('post_id', $post->id)->where('user_id', Auth::id())->exists()) {
-            return redirect()->route('posts.show', $post->id)->with('info', 'You already liked this post.');
+        $userId = Auth::id();
+        $like = Like::where('post_id', $post->id)->where('user_id', $userId)->first();
+
+        if ($like) {
+            // If the user already liked the post, remove the like
+            $like->delete();
+            return redirect()->route('dashboard')->with('success', 'Post unliked successfully.');
+        } else {
+            // If the user has not liked the post, add a new like
+            $like = new Like();
+            $like->post_id = $post->id;
+            $like->user_id = $userId;
+            $like->save();
+            return redirect()->route('dashboard')->with('success', 'Post liked successfully.');
         }
-
-        $like = new Like();
-        $like->post_id = $post->id;
-        $like->user_id = Auth::id();
-        $like->save();
-
-        return redirect()->route('posts.show', $post->id)->with('success', 'Post liked successfully.');
     }
 
     // Unlike a post
