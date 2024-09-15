@@ -22,10 +22,27 @@ class PostController extends Controller
     }
 
     // Show a specific post
-    public function show(Post $post)
+    public function show($id)
     {
-        return view('posts.show', compact('post'));
+        $post = Post::with(['comments.user'])->findOrFail($id);
+
+        return response()->json([
+            'image' => $post->image ? asset('storage/' . $post->image) : null,
+            'userLink' => route('profile.show', $post->user->username),
+            'userProfile' => $post->user->profile_picture ? asset('storage/profile_pictures/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png'),
+            'userName' => $post->user->username,
+            'content' => $post->content,
+            'comments' => $post->comments->map(function ($comment) {
+                return [
+                    'userLink' => route('profile.show', $comment->user->username),
+                    'userProfile' => $comment->user->profile_picture ? asset('storage/profile_pictures/' . $comment->user->profile_picture) : asset('storage/profile_pictures/default-user.png'),
+                    'userName' => $comment->user->username,
+                    'content' => $comment->content,
+                ];
+            }),
+        ]);
     }
+
 
     // Show the form to create a new post
     public function create()
@@ -78,13 +95,29 @@ class PostController extends Controller
 
         $post->save();
 
-        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
+        return redirect()->route('dashboard')->with('success', 'Post updated successfully.');
     }
 
     // Delete a specific post
     public function destroy(Post $post)
     {
         $post->delete();
-        return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
+        return redirect()->route('dashboard')->with('success', 'Post deleted successfully.');
+    }
+
+    public function getComments(Post $post)
+    {
+        $comments = $post->comments->load('user'); // Ensure user relationship is loaded
+        return response()->json([
+            'comments' => $comments->map(function ($comment) {
+                return [
+                    'user' => [
+                        'username' => $comment->user->username,
+                        'profile_picture' => $comment->user->profile_picture,
+                    ],
+                    'content' => $comment->content,
+                ];
+            }),
+        ]);
     }
 }

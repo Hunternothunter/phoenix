@@ -1,4 +1,31 @@
 <x-app-layout>
+    <style>
+        .image-container {
+            width: 120px;
+            height: 110px;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #upload-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+        }
+    </style>
     <div class="container-fluid p-0">
         {{-- <h1 class="h3 mb-3">Profile</h1> --}}
 
@@ -9,21 +36,28 @@
                         <h5 class="card-title mb-0">Profile Details</h5>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('storage/profile-pictures/default-user.png') }}"
-                            alt="{{ $user->name }}" class="img-fluid rounded-circle mb-2" width="128"
+                        <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
+                            alt="{{ $user->firstname }}" class="img-fluid rounded-circle mb-2" width="128"
                             height="128" />
                         <h5 class="card-title mb-0">{{ $user->firstname . ' ' . $user->lastname }}</h5>
                         <div class="text-muted mb-2">{{ $user->email }}</div>
                         <div class="text-muted mb-2">Joined: {{ $user->created_at->format('F d, Y') }}</div>
 
-                        @if (!Auth::user())
+                        @if (!(Auth::check() && Auth::user()->id === $user->id))
                             <div>
                                 <a class="btn btn-primary btn-sm" href="#">Follow</a>
                                 <a class="btn btn-primary btn-sm" href="#"><span
-                                        data-lucide="message-square"></span>
-                                    Message</a>
+                                        data-lucide="message-square"></span> Message</a>
                             </div>
+                        @else
+                            @include('modals.update-profile')
+
+                            <button class="btn btn-primary w-100" data-bs-toggle="modal"
+                                data-bs-target="#whats-on-your-mind">
+                                Edit profile
+                            </button>
                         @endif
+
                     </div>
                     <hr class="my-0" />
                     <div class="card-body">
@@ -215,4 +249,17 @@
         </div>
 
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('message'))
+                Swal.fire({
+                    title: 'Success!',
+                    text: '{{ session('message') }}',
+                    icon: 'success',
+                    timer: 2000
+                });
+            @endif
+        });
+    </script>
 </x-app-layout>

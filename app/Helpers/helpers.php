@@ -6,16 +6,22 @@ if (!function_exists('customTimeDiff')) {
         $now = \Carbon\Carbon::now();
         $diff = $now->diff($dateTime);
 
-        $diffInMinutes = $diff->days * 1440; // convert days to minutes
-        $diffInMinutes += $diff->h * 60; // convert hours to minutes
-        $diffInMinutes += $diff->i; // add minutes
+        // Calculate total difference in minutes
+        $diffInMinutes = ($diff->days * 1440) + ($diff->h * 60) + $diff->i;
+        
+        // Handle seconds
+        $diffInSeconds = $diff->s;
 
-        if ($diffInMinutes < 60) {
-            return $diffInMinutes . 'm';
-        } elseif ($diffInMinutes < 1440) { // 1440 minutes = 1 day
+        // Return the appropriate format
+        if ($diffInMinutes < 1) {
+            return $diffInSeconds . 's'; // Less than a minute, return seconds
+        } elseif ($diffInMinutes < 60) {
+            return $diffInMinutes . 'm'; // Less than an hour, return minutes
+        } elseif ($diffInMinutes < 1440) { // Less than a day, return hours
             return round($diffInMinutes / 60) . 'h';
-        } else {
-            return round($diffInMinutes / 1440) . 'd'; // 1440 minutes = 1 day
+        } else { // More than a day, return days
+            return round($diffInMinutes / 1440) . 'd';
         }
     }
 }
+

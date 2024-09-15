@@ -12,19 +12,25 @@ use Illuminate\Support\Facades\Auth;
 class CommentController extends Controller
 {
     // Store a new comment
-    public function store(Request $request, Post $post)
+    public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'post_id' => 'required|exists:posts,id',
             'content' => 'required|string|max:255',
         ]);
 
         $comment = new Comment();
-        $comment->post_id = $post->id;
+        $comment->post_id = $validated['post_id'];
         $comment->user_id = Auth::id();
-        $comment->content = $request->input('content');
+        $comment->content = $validated['content'];
         $comment->save();
 
-        return redirect()->route('posts.show', $post->id)->with('success', 'Comment added successfully.');
+        return response()->json([
+            'comment' => $comment,
+            'user' => $comment->user,
+        ]);
+
+        // return redirect()->route('dashboard', $validated['post_id'])->with('success', 'Comment added successfully.');
     }
 
     // Delete a specific comment

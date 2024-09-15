@@ -23,14 +23,13 @@ Route::get('/dashboard', function () {
     return view('dashboard', compact('posts', 'user', 'following', 'activities'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.show');
-
-
+Route::get('/profile/{username}', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/posts/{post}/comments', [PostController::class, 'getComments']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/search', [ProfileController::class, 'search'])->name('profile.search');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/{id}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

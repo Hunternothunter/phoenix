@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -37,9 +38,9 @@ class ProfileController extends Controller
      */
     public function show($identifier): View
     {
-        $user = User::where('email', $identifier)
-            ->orWhere('name', $identifier)
-            ->orWhere('username', $identifier)
+        $user = User::where('username', $identifier)
+            // ->orWhere('firstname', $identifier)
+            // ->orWhere('email', $identifier)
             ->firstOrFail();
 
         return view('profile.show', [
@@ -52,15 +53,51 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $request->validate([
+            'firstname' => ['required', 'string', 'max:255'],
+            'middlename' => ['nullable', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'birthdate' => ['nullable', 'date', 'before:today'],
+            'gender' => ['nullable', 'string', 'max:25'],
+            'mobile_num' => ['nullable', 'string', 'max:30'],
+            'profile_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'username' => ['required', 'string', 'lowercase', 'email', 'max:16', 'unique:users,username,' . $user->id],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $user->id],
+
+        ]);
+
+        if ($request->hasFile('profile_picture')) {
+            if ($user->profile_picture) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+
+            $file = $request->file('profile_picture');
+            $profilePicturePath = $file->store('profile_pictures', 'public');
+
+            $user->profile_picture = $profilePicturePath;
         }
 
-        $request->user()->save();
+        $user->fill($request->only([
+            'firstname',
+            'middlename',
+            'lastname',
+            'email',
+            'username',
+            'gender',
+            'birthdate',
+            'mobile_num'
+        ]));
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
+
+        return Redirect::route('profile.show', $user->username)
+            ->with('message', 'You successfully updated your profile information.');
     }
 
     /**

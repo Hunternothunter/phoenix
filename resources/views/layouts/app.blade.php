@@ -109,7 +109,8 @@
                     </a>
                     <form method="GET" action="{{ route('profile.search') }}" class="d-none d-sm-inline-block">
                         <div class="input-group input-group-navbar">
-                            <input type="text" class="form-control" name="query" placeholder="Search" aria-label="Search">
+                            <input type="text" class="form-control" name="query" placeholder="Search"
+                                aria-label="Search">
                             <button class="btn" type="submit">
                                 <i class="align-middle" data-lucide="search"></i>
                             </button>
@@ -190,7 +191,7 @@
                             <!-- Profile -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link d-none d-sm-inline-block" data-bs-toggle="dropdown">
-                                    <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/profile-pictures/default-user.png') }}"
+                                    <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                         class="rounded-circle me-1 mt-n2 mb-n2" alt="{{ Auth::user()->firstname }}"
                                         width="40" height="40" style="border: 2px solid #f0f0f0;" />
                                     <span>{{ Auth::user()->firstname }}</span>
@@ -272,7 +273,9 @@
 
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
     @stack('scripts')
 
     <script>

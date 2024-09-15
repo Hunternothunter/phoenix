@@ -41,10 +41,14 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $firstname = ucwords(strtolower($request->firstname));
+        $middlename = $request->middlename ? ucwords(strtolower($request->middlename)) : null;
+        $lastname = ucwords(strtolower($request->lastname));
+
         $user = User::create([
-            'firstname' => $request->firstname,
-            'middlename' => $request->middlename,
-            'lastname' => $request->lastname,
+            'firstname' => $firstname,
+            'middlename' => $middlename,
+            'lastname' => $lastname,
             'birthdate' => $request->birthdate,
             'gender' => $request->gender,
             'mobile_num' => $request->mobile_num,

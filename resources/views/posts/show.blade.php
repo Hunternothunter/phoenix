@@ -1,15 +1,13 @@
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
     <div class="container">
-        <h1>{{ $post->user->name }}'s Post</h1>
+        <h1>{{ $post->user->firstname }}'s Post</h1>
         <p>{{ $post->content }}</p>
-        @if($post->image)
+        @if ($post->image)
             <img src="{{ asset('storage/' . $post->image) }}" alt="Post Image" class="img-fluid">
         @endif
 
         <h3>Comments</h3>
-        @foreach($post->comments as $comment)
+        @foreach ($post->comments as $comment)
             <div class="card mb-2">
                 <div class="card-body">
                     <h5 class="card-title">{{ $comment->user->name }}</h5>
@@ -29,4 +27,4 @@
             </form>
         @endauth
     </div>
-@endsection
+</x-app-layout>

@@ -1,7 +1,8 @@
 @props([
     'name',
     'show' => false,
-    'maxWidth' => '2xl'
+    'maxWidth' => '2xl',
+    'centered' => false
 ])
 
 @php
@@ -12,12 +13,14 @@ $maxWidth = [
     'xl' => 'modal-dialog modal-xl',
     '2xl' => 'modal-dialog modal-xl', // Adjust if needed
 ][$maxWidth];
+
+$centeredClass = $centered ? 'modal-dialog-centered' : '';
 @endphp
 
 <!-- Modal -->
 <div class="modal fade {{ $show ? 'show' : '' }}" id="{{ $name }}" tabindex="-1" aria-labelledby="{{ $name }}Label" aria-hidden="true" style="{{ $show ? 'display: block;' : 'display: none;' }}">
-    <div class="modal-dialog {{ $maxWidth }}">
-        <div class="modal-content">
+    <div class="modal-dialog {{ $centeredClass }} {{ $maxWidth }}">
+        <div class="modal-content" style="background-color: #f8f9fa;"> <!-- Inline CSS for light background -->
             <div class="modal-header text-center">
                 <h5 class="modal-title" id="{{ $name }}Label">{{ $attributes->get('title', 'Modal Title') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -25,15 +28,10 @@ $maxWidth = [
             <div class="modal-body">
                 {{ $slot }}
             </div>
-            {{-- <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <!-- Add other footer buttons as needed -->
-            </div> --}}
         </div>
     </div>
 </div>
 
-<!-- Include Bootstrap JS and Popper.js -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
