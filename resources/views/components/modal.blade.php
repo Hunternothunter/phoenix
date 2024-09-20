@@ -22,7 +22,7 @@ $centeredClass = $centered ? 'modal-dialog-centered' : '';
     <div class="modal-dialog {{ $centeredClass }} {{ $maxWidth }}">
         <div class="modal-content" style="background-color: #f8f9fa;"> <!-- Inline CSS for light background -->
             <div class="modal-header text-center">
-                <h5 class="modal-title" id="{{ $name }}Label">{{ $attributes->get('title', 'Modal Title') }}</h5>
+                <h5 class="modal-title text-center" id="{{ $name }}Label">{{ $attributes->get('title', 'Modal Title') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -31,9 +31,6 @@ $centeredClass = $centered ? 'modal-dialog-centered' : '';
         </div>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

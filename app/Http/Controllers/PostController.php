@@ -54,7 +54,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'content' => 'required|string|max:255',
+            'content' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -75,7 +75,15 @@ class PostController extends Controller
     // Show the form to edit a post
     public function edit(Post $post)
     {
-        return view('posts.edit', compact('post'));
+        // return view('posts.edit', compact('post'));
+        return response()->json([
+            'content' => $post->content,
+            'image' => $post->image,
+            'user' => [
+                'username' => $post->user->username,
+                'profile_pictures' => $post->user->profile_pictures
+            ]
+        ]);
     }
 
     // Update a specific post
@@ -96,6 +104,7 @@ class PostController extends Controller
         $post->save();
 
         return redirect()->route('dashboard')->with('success', 'Post updated successfully.');
+        // return response()->json(['message' => 'Post updated successfully']);
     }
 
     // Delete a specific post
@@ -113,7 +122,7 @@ class PostController extends Controller
                 return [
                     'user' => [
                         'username' => $comment->user->username,
-                        'profile_picture' => $comment->user->profile_picture,
+                        'profile_pictures' => $comment->user->profile_pictures,
                     ],
                     'content' => $comment->content,
                 ];

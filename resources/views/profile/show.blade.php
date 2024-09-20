@@ -26,6 +26,8 @@
             padding: 0.5rem 1rem;
         }
     </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <div class="container-fluid p-0">
         {{-- <h1 class="h3 mb-3">Profile</h1> --}}
 
@@ -43,24 +45,34 @@
                         <div class="text-muted mb-2">{{ $user->email }}</div>
                         <div class="text-muted mb-2">Joined: {{ $user->created_at->format('F d, Y') }}</div>
 
-                        @if (!(Auth::check() && Auth::user()->id === $user->id))
-                            <div>
-                                <a class="btn btn-primary btn-sm" href="#">Follow</a>
-                                <a class="btn btn-primary btn-sm" href="#"><span
-                                        data-lucide="message-square"></span> Message</a>
-                            </div>
-                        @else
-                            @include('modals.update-profile')
+                        @auth
+                            @if (!(Auth::check() && Auth::user()->id === $user->id) && Auth::user())
+                                <div class="d-flex inline-flex align-item-center justify-content-center gap-2">
+                                    <form id="follow-form" action="{{ route('users.followToggle', $user->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary btn-lg" id="follow-button">
+                                            {{ Auth::user()->isFollowing($user->id) ? 'Following' : 'Follow' }}
+                                        </button>
+                                    </form>
+                                    <a class="btn btn-light btn-lg" href="{{ route('messages.create', $user->id) }}">
+                                        {{-- <span data-lucide="message-square"></span> --}}
+                                        Message
+                                    </a>
+                                </div>
+                            @else
+                                @include('modals.update-profile')
 
-                            <button class="btn btn-primary w-100" data-bs-toggle="modal"
-                                data-bs-target="#whats-on-your-mind">
-                                Edit profile
-                            </button>
-                        @endif
+                                <button class="btn btn-primary w-100" data-bs-toggle="modal"
+                                    data-bs-target="#whats-on-your-mind">
+                                    Edit profile
+                                </button>
+                            @endif
+                        @endauth
 
                     </div>
                     <hr class="my-0" />
-                    <div class="card-body">
+                    {{-- <div class="card-body">
                         <h5 class="h6 card-title">Skills</h5>
                         <a href="#" class="badge badge-subtle-primary me-1 my-1">HTML</a>
                         <a href="#" class="badge badge-subtle-primary me-1 my-1">JavaScript</a>
@@ -71,6 +83,12 @@
                         <a href="#" class="badge badge-subtle-primary me-1 my-1">Redux</a>
                         <a href="#" class="badge badge-subtle-primary me-1 my-1">UI</a>
                         <a href="#" class="badge badge-subtle-primary me-1 my-1">UX</a>
+                    </div> --}}
+                    <div class="card-body">
+                        <h5 class="h6 card-title">Bio</h5>
+                        <p class="me-1 my-1 text-center" name="bio">
+                            {{ $user->bio ? $user->bio : 'No bio available' }}
+                        </p>
                     </div>
                     <hr class="my-0" />
                     <div class="card-body">
@@ -260,6 +278,32 @@
                     timer: 2000
                 });
             @endif
+
+            document.getElementById('follow-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                let form = this;
+                let button = document.getElementById('follow-button');
+
+                fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content'),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({}),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'followed') {
+                            button.textContent = 'Following';
+                        } else if (data.status === 'unfollowed') {
+                            button.textContent = 'Follow';
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
         });
     </script>
 </x-app-layout>
