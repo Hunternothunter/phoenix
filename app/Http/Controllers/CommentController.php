@@ -30,7 +30,7 @@ class CommentController extends Controller
             'user' => $comment->user,
         ]);
 
-        // return redirect()->route('dashboard', $validated['post_id'])->with('success', 'Comment added successfully.');
+        // return redirect()->route('home', $validated['post_id'])->with('success', 'Comment added successfully.');
     }
 
     // Delete a specific comment

@@ -69,7 +69,7 @@ class PostController extends Controller
 
         $post->save();
 
-        return redirect()->route('dashboard')->with('success', 'Post created successfully.');
+        return redirect()->route('home')->with('success', 'Post created successfully.');
     }
 
     // Show the form to edit a post
@@ -103,7 +103,7 @@ class PostController extends Controller
 
         $post->save();
 
-        return redirect()->route('dashboard')->with('success', 'Post updated successfully.');
+        return redirect()->route('home')->with('success', 'Post updated successfully.');
         // return response()->json(['message' => 'Post updated successfully']);
     }
 
@@ -111,7 +111,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
-        return redirect()->route('dashboard')->with('success', 'Post deleted successfully.');
+        return redirect()->route('home')->with('success', 'Post deleted successfully.');
     }
 
     public function getComments(Post $post)

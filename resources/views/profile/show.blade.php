@@ -34,9 +34,32 @@
         <div class="row">
             <div class="col-md-4 col-xl-3">
                 <div class="card mb-3">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Profile Details</h5>
+                        @include('modals.update-profile')
+
+                        <a class="nav-link d-flex align-items-center" data-bs-toggle="dropdown">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20"
+                                height="20"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                <path
+                                    d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z" />
+                            </svg>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item btn btn-lg w-100 fw-bold" data-bs-toggle="modal"
+                                data-bs-target="#whats-on-your-mind">
+                                <span class="ml-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="15"
+                                        height="15"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                        <path
+                                            d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z" />
+                                    </svg>
+                                </span>
+                                Edit profile
+                            </a>
+                        </div>
                     </div>
+
                     <div class="card-body text-center">
                         <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                             alt="{{ $user->firstname }}" class="img-fluid rounded-circle mb-2" width="128"
@@ -60,13 +83,6 @@
                                         Message
                                     </a>
                                 </div>
-                            @else
-                                @include('modals.update-profile')
-
-                                <button class="btn btn-primary w-100" data-bs-toggle="modal"
-                                    data-bs-target="#whats-on-your-mind">
-                                    Edit profile
-                                </button>
                             @endif
                         @endauth
 

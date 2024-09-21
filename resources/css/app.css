@@ -14551,23 +14551,23 @@
      width: 20px;
  }
  .nav-item .indicator {
-     background: #3f80ea;
+     background: #DC3545; /* #3f80ea */
      border-radius: 50%;
      box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.05);
      color: #fff;
      display: block;
      font-size: 0.675rem;
-     height: 18px;
      padding: 1px;
      position: absolute;
-     right: -8px;
+     right: -17px;
      text-align: center;
-     top: 0;
+     top: -15px;
      transition: top 0.1s ease-out;
-     width: 18px;
+     height: 19px;
+     width: 19px;
  }
  .nav-item:hover .indicator {
-     top: -4px;
+     top: -10px;
  }
  .nav-item a:focus {
      outline: 0;

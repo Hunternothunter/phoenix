@@ -1,5 +1,4 @@
 <x-modal name="whats-on-your-mind" maxWidth="md" title="Create post" focusable>
-    <!-- Inline CSS for button positioning -->
     <style>
         .remove-preview-btn {
             top: 10px;
@@ -28,13 +27,13 @@
 
         <div class="row align-items-start">
             <!-- User Profile Section -->
-            <div class="col-1 d-flex justify-content-center">
+            <div class="col-auto d-flex justify-content-center mb-2">
                 <img src="{{ Auth::user()->profile_pictures ? asset('storage/profile_pictures/' . Auth::user()->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
                     width="50" height="50" class="rounded-circle border border-light shadow-sm"
                     alt="{{ Auth::user()->firstname }}">
             </div>
 
-            <div class="col-11">
+            <div class="col">
                 <!-- Textarea for Content Input -->
                 <div class="mb-3">
                     <input id="content" name="content" class="form-control custom-textarea" rows="3"
@@ -49,25 +48,22 @@
                         class="btn btn-sm btn-danger position-absolute remove-preview-btn">
                         <i class="bi bi-x" data-lucide="circle-x"></i>
                     </button>
-                    <img id="image-preview" class="img-fluid preview-image" style="max-width: 100%; max-height: 400px;">
-                    <video id="video-preview" class="d-none preview-video" style="max-width: 100%; max-height: 400px;"
-                        controls></video>
+                    <img id="image-preview" class="img-fluid preview-image">
+                    <video id="video-preview" class="d-none preview-video" controls></video>
                 </div>
 
                 <hr class="my-2">
 
                 <!-- File Upload and Submit Button -->
-                <div class="d-flex align-items-center">
+                <div class="d-flex flex-wrap align-items-center">
                     <label for="file-upload" class="btn btn-lg me-2 d-flex align-items-center upload-btn">
                         <i class="fs-5 me-2" data-lucide="images"></i>
                         <span class="fs-5 fw-bold">Photo/Video</span>
-                        <!-- Hidden file input -->
                         <input type="file" id="file-upload" name="image" class="d-none" accept="image/*,video/*">
                     </label>
                     <button type="submit" class="btn btn-primary fs-5 fw-bold">Post</button>
                 </div>
             </div>
-
         </div>
     </form>
 
@@ -83,7 +79,6 @@
                 const file = fileInput.files[0];
                 if (file) {
                     const fileURL = URL.createObjectURL(file);
-
                     if (file.type.startsWith('image/')) {
                         imagePreview.src = fileURL;
                         imagePreview.classList.remove('d-none');
@@ -100,7 +95,7 @@
             });
 
             removePreviewButton.addEventListener('click', function() {
-                fileInput.value = ''; // Clear the file input
+                fileInput.value = '';
                 imagePreview.src = '';
                 videoPreview.src = '';
                 imagePreview.classList.add('d-none');

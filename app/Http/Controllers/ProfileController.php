@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
+
 
 class ProfileController extends Controller
 {
@@ -123,6 +125,9 @@ class ProfileController extends Controller
 
     public function search(Request $request)
     {
+        // Log the request input
+        Log::info('Search query received:', $request->all());
+
         $query = $request->input('query');
 
         // Validate the query if needed

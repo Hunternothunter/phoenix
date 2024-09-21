@@ -86,7 +86,7 @@
                     </div>
                 </div> --}}
 
-                <form action="{{ route('login') }}" method="POST">
+                {{-- <form action="{{ route('login') }}" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label class="form-label">Email</label>
@@ -106,7 +106,6 @@
                                     Forgot your password?
                                 </a>
                             @endif
-                            {{-- <a href='/auth-reset-password'>Forgot password?</a> --}}
                         </small>
                     </div>
                     <div>
@@ -119,7 +118,41 @@
                     <div class="d-grid gap-2 mt-3">
                         <button class='btn btn-lg btn-primary text-lg' type="submit">Log in</button>
                     </div>
+                </form> --}}
+                <form action="{{ route('login') }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Email or Username</label>
+                        <input class="form-control form-control-lg" placeholder="Enter your email or username"
+                            id="identifier" type="text" name="identifier" :value="old('identifier')" required
+                            autofocus autocomplete="username" />
+                        <x-input-error :messages="$errors->get('identifier')" class="mt-2" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input class="form-control form-control-lg mb-2" type="password" name="password"
+                            placeholder="Enter your password" required autocomplete="current-password" />
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                        <small>
+                            @if (Route::has('password.request'))
+                                <a href="{{ route('password.request') }}">
+                                    Forgot your password?
+                                </a>
+                            @endif
+                        </small>
+                    </div>
+                    <div>
+                        <div class="form-check align-items-center">
+                            <input id="customControlInline" type="checkbox" class="form-check-input" value="remember-me"
+                                name="remember" />
+                            <label class="form-check-label text-small" for="customControlInline">Remember me</label>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 mt-3">
+                        <button class='btn btn-lg btn-primary text-lg' type="submit">Log in</button>
+                    </div>
                 </form>
+
             </div>
 
             <div class="text-center">

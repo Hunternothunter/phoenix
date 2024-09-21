@@ -34,6 +34,8 @@
 <style>
     .nav-btn {
         border: none;
+        width: 100px;
+        padding: 1.3rem;
     }
 
     .position-relative {
@@ -56,9 +58,11 @@
         border-top-left-radius: 1rem;
         border-bottom-left-radius: 1rem;
     }
-    .rounded-left::placeholder{
+
+    .rounded-left::placeholder {
         font-size: 0.9rem;
     }
+
     .rounded-right {
         border-top-right-radius: 1rem;
         border-bottom-right-radius: 1rem;
@@ -70,7 +74,7 @@
         @if (Auth::user())
             {{-- <nav id="sidebar" class="sidebar">
                 <div class="sidebar-content js-simplebar">
-                    <a class='sidebar-brand' href='{{ route('dashboard') }}'>
+                    <a class='sidebar-brand' href='{{ route('home') }}'>
                         <div class="text-center gap-2">
                             <div id="apptitle">
                                 {{ __('Huntergram') }}
@@ -83,7 +87,7 @@
                             Navigation
                         </li>
                         <li class="sidebar-item">
-                            <a href="{{ route('dashboard') }}" class="sidebar-link">
+                            <a href="{{ route('home') }}" class="sidebar-link">
                                 <i class="align-middle" data-lucide="home"></i> <span class="align-middle">Home</span>
                             </a>
                         </li>
@@ -146,32 +150,23 @@
             </nav> --}}
         @endif
         <div class="main">
-            <nav class="navbar navbar-expand navbar-bg">
+            <nav class="navbar navbar-expand-lg navbar-bg" style="padding: 0.5rem 1rem; height:4rem;">
                 @auth
-                    <div class="d-flex align-items-center w-100">
-                        <a href="{{ route('dashboard') }}" class="btn btn-lg me-2 rounded-circle">
+                    <div class="container-fluid">
+                        <a href="/" class="btn btn-lg me-2 rounded-circle">
                             <h1>{{ __('H') }}</h1>
                         </a>
-                        <form method="GET" action="{{ route('profile.search') }}" class="d-none d-sm-inline-block me-2">
-                            <div class="input-group input-group-navbar">
-                                <input type="text" class="form-control rounded-left" name="query"
-                                    placeholder="Search Huntergram" aria-label="Search" required>
-                                <button class="btn rounded-right" type="submit">
-                                    <i class="align-middle" data-lucide="search"></i>
-                                </button>
-                            </div>
-                        </form>
-
-                        <div class="d-flex justify-content-center flex-grow-1 align-items-center gap-4 mx-3">
-                            <a href="{{ route('dashboard') }}"
-                                class="btn btn-transparent btn-lg position-relative nav-btn {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        
+                        {{-- <div class="d-flex justify-content-center flex-grow-1 align-items-center gap-4 mx-3">
+                            <a href="{{ route('home') }}"
+                                class="btn btn-transparent btn-lg position-relative nav-btn {{ request()->routeIs('home') ? 'active' : '' }}">
                                 <i class="fas fa-home fa-xl"></i>
                                 <span
-                                    class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('dashboard') ? '' : 'd-none' }}"
+                                    class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('home') ? '' : 'd-none' }}"
                                     style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
                             </a>
 
-                            <a href="{{ route('watch.show') }}"
+                            <a href="{{ route('watch.show', Auth::user()->id) }}"
                                 class="btn btn-transparent btn-lg position-relative nav-btn">
                                 <i class="fas fa-tv fa-xl"></i>
                                 <span
@@ -186,82 +181,97 @@
                                     class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('profile.show', Auth::user()->username) ? '' : 'd-none' }}"
                                     style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
                             </a>
-                        </div>
+                        </div> --}}
 
-                        <div class="navbar-collapse collapse d-flex justify-content-end align-items-center">
-                            <ul class="navbar-nav">
-                                <!-- Messages -->
-                                <li class="nav-item dropdown">
-                                    <a class="nav-icon dropdown-toggle" href="#" id="messagesDropdown"
-                                        data-bs-toggle="dropdown">
-                                        <div class="position-relative">
-                                            <i class="align-middle text-body" data-lucide="message-circle"></i>
-                                            <span class="indicator">{{ Auth::user()->unreadMessagesCount() }}</span>
-                                        </div>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0"
-                                        aria-labelledby="messagesDropdown">
-                                        <div class="dropdown-menu-header">
-                                            {{ Auth::user()->unreadMessagesCount() }} New Messages
-                                        </div>
-                                        <div class="list-group">
-                                            @foreach (Auth::user()->unreadMessages as $message)
-                                                <a href="#" class="list-group-item">
-                                                    <div class="row g-0 align-items-center">
-                                                        <div class="col-2">
-                                                            <img src="{{ $message->profile_pictures ? asset('storage/profile_pictures/' . $message->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
-                                                                class="img-fluid rounded-circle"
-                                                                alt="{{ $message->sender->firstname }}" width="40"
-                                                                height="40">
-                                                        </div>
-                                                        <div class="col-10 ps-2">
-                                                            <div>{{ $message->sender->firstname }}</div>
-                                                            <div class="text-muted small mt-1">
-                                                                {{ Str::limit($message->content, 50) }}</div>
-                                                            <div class="text-muted small mt-1">
-                                                                {{ $message->created_at->diffForHumans() }}</div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                        <div class="dropdown-menu-footer">
-                                            <a href="{{ route('messages.index') }}" class="text-muted">Show all
-                                                messages</a>
-                                        </div>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <form method="GET" action="{{ route('profile.search') }}"
+                                class="d-none d-sm-inline-block me-2">
+                                <div class="input-group input-group-navbar">
+                                    <input type="text" class="form-control rounded-left" name="query"
+                                        placeholder="Search" aria-label="Search" required>
+                                    <button class="btn rounded-right" type="submit">
+                                        <i class="align-middle" data-lucide="search"></i>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="d-flex justify-content-center flex-grow-1 align-items-center gap-4 mx-3">
+                                <a href="/"
+                                    class="btn btn-lg position-relative nav-btn {{ request()->routeIs('home') ? 'active' : '' }}">
+                                    <i class="fas fa-home fa-xl"></i>
+                                    <span
+                                        class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('home') ? '' : 'd-none' }}"
+                                        style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
+                                </a>
+
+                                <a href="{{ route('watch.show', Auth::user()->id) }}"
+                                    class="btn btn-lg position-relative nav-btn">
+                                    <i class="fas fa-tv fa-xl"></i>
+                                    <span
+                                        class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('watch.show') ? '' : 'd-none' }}"
+                                        style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
+                                </a>
+
+                                <a href="{{ route('profile.show', Auth::user()->username) }}"
+                                    class="btn btn-lg position-relative nav-btn {{ request()->routeIs('profile.show', Auth::user()->username) ? 'active' : '' }}">
+                                    <i class="fas fa-user fa-xl"></i>
+                                    <span
+                                        class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('profile.show', Auth::user()->username) ? '' : 'd-none' }}"
+                                        style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
+                                </a>
+                            </div>
+
+                            <ul class="navbar-nav d-flex justify-content-end align-items-center">
+                                <li class="nav-item dropdown me-2">
+                                    <div class="rounded-circle bg-light d-flex justify-content-center align-items-center"
+                                        style="width:45px; height:45px">
+                                        <a class="nav-icon dropdown-toggle" href="#" id="messagesDropdown"
+                                            data-bs-toggle="dropdown">
+                                            <div class="position-relative">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 512 512"><!-- SVG code --></svg>
+                                                @if (Auth::user()->unreadMessagesCount() > 0)
+                                                    <span
+                                                        class="indicator">{{ Auth::user()->unreadMessagesCount() }}</span>
+                                                @endif
+                                            </div>
+                                        </a>
                                     </div>
                                 </li>
 
-                                <!-- Notifications -->
                                 <li class="nav-item dropdown">
-                                    <a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown"
-                                        data-bs-toggle="dropdown">
-                                        <div class="position-relative">
-                                            <i class="align-middle text-body" data-lucide="bell"></i>
-                                            <span class="indicator">{{ Auth::user()->unreadNotificationsCount() }}</span>
-                                        </div>
-                                    </a>
-                                    <!-- Notification dropdown similar to messages -->
+                                    <div class="rounded-circle bg-light d-flex justify-content-center align-items-center"
+                                        style="width:45px; height:45px">
+                                        <a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown"
+                                            data-bs-toggle="dropdown">
+                                            <div class="position-relative">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 448 512"><!-- SVG code --></svg>
+                                                @if (Auth::user()->unreadNotificationsCount())
+                                                    <span
+                                                        class="indicator">{{ Auth::user()->unreadNotificationsCount() }}</span>
+                                                @endif
+                                            </div>
+                                        </a>
+                                    </div>
                                 </li>
 
-                                <!-- Profile -->
                                 <li class="nav-item dropdown">
                                     <a class="nav-link d-flex align-items-center" data-bs-toggle="dropdown">
                                         <img src="{{ Auth::user()->profile_pictures ? asset('storage/profile_pictures/' . Auth::user()->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
                                             class="rounded-circle me-2" alt="{{ Auth::user()->firstname }}"
-                                            width="43" height="43" style="border: 1px solid #f0f0f0;" />
-                                        {{-- <div class="d-flex flex-column">
-                                            <span class="fw-bold">{{ Auth::user()->username }}</span>
-                                            <span class="text-muted">{{ Auth::user()->firstname }}
-                                                {{ Auth::user()->lastname }}</span>
-                                        </div> --}}
+                                            width="45" height="45" style="border: 1px solid #f0f0f0;" />
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end">
                                         <a class='dropdown-item'
                                             href="{{ route('profile.show', Auth::user()->username) }}">
                                             <i class="align-middle me-1" data-lucide="user"></i> Profile
                                         </a>
-                                        <a class="dropdown-item" href="{{ route('dashboard') }}">
+                                        <a class="dropdown-item" href="{{ route('home') }}">
                                             <i class="align-middle me-1" data-lucide="pie-chart"></i> Analytics
                                         </a>
                                         <div class="dropdown-divider"></div>
@@ -270,9 +280,8 @@
                                         <form action="{{ route('logout') }}" method="post">
                                             @csrf
                                             <a class="dropdown-item" href="{{ route('logout') }}"
-                                                onclick="event.preventDefault(); this.closest('form').submit();">
-                                                Sign out
-                                            </a>
+                                                onclick="event.preventDefault(); this.closest('form').submit();">Sign
+                                                out</a>
                                         </form>
                                     </div>
                                 </li>

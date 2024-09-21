@@ -20,14 +20,14 @@ class LikeController extends Controller
         if ($like) {
             // If the user already liked the post, remove the like
             $like->delete();
-            return redirect()->route('dashboard')->with('success', 'Post unliked successfully.');
+            return redirect()->route('home')->with('success', 'Post unliked successfully.');
         } else {
             // If the user has not liked the post, add a new like
             $like = new Like();
             $like->post_id = $post->id;
             $like->user_id = $userId;
             $like->save();
-            return redirect()->route('dashboard')->with('success', 'Post liked successfully.');
+            return redirect()->route('home')->with('success', 'Post liked successfully.');
         }
     }
 

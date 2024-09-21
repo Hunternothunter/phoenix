@@ -129,7 +129,7 @@
                             @csrf
                             <div class="row align-items-start">
                                 <!-- User Profile Section -->
-                                <div class="col-1 d-flex justify-content-center">
+                                <div class="col-auto d-flex justify-content-center mb-2 mb-md-0">
                                     <a href="{{ route('profile.show', Auth::user()->username) }}">
                                         <img src="{{ Auth::user()->profile_pictures ? asset('storage/profile_pictures/' . Auth::user()->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
                                             width="50" height="50"
@@ -138,7 +138,7 @@
                                 </div>
 
                                 <!-- Input Field and Photo/Video Button Section -->
-                                <div class="col-11">
+                                <div class="col">
                                     <div class="mb-3">
                                         <button type="button"
                                             class="btn btn-light btn-lg w-100 h-100 fs-5 text-start rounded-5"
@@ -150,7 +150,7 @@
 
                                     @include('modals.create-post')
 
-                                    <div class="d-flex align-items-center">
+                                    <div class="d-flex flex-wrap align-items-center">
                                         <button type="button" class="btn btn-lg me-2 d-flex align-items-center"
                                             data-bs-toggle="modal" data-bs-target="#whats-on-your-mind"
                                             style="background-color: transparent; border: 1px solid transparent;"
@@ -160,16 +160,14 @@
                                             <span class="align-middle fw-bold">Live video</span>
                                         </button>
 
-                                        <div class="d-flex align-items-center">
-                                            <button type="button" class="btn btn-lg me-2 d-flex align-items-center"
-                                                data-bs-toggle="modal" data-bs-target="#whats-on-your-mind"
-                                                style="background-color: transparent; border: 1px solid transparent;"
-                                                onmouseover="this.style.backgroundColor='#EBEBEB'; this.style.borderColor='#EBEBEB';"
-                                                onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='transparent';">
-                                                <i class="align-middle me-2" data-lucide="images"></i>
-                                                <span class="align-middle fw-bold">Photo/Video</span>
-                                            </button>
-                                        </div>
+                                        <button type="button" class="btn btn-lg me-2 d-flex align-items-center"
+                                            data-bs-toggle="modal" data-bs-target="#whats-on-your-mind"
+                                            style="background-color: transparent; border: 1px solid transparent;"
+                                            onmouseover="this.style.backgroundColor='#EBEBEB'; this.style.borderColor='#EBEBEB';"
+                                            onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='transparent';">
+                                            <i class="align-middle me-2" data-lucide="images"></i>
+                                            <span class="align-middle fw-bold">Photo/Video</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
