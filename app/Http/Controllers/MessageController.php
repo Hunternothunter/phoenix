@@ -115,7 +115,25 @@ class MessageController extends Controller
             'receiver' => $user,
             'users' => User::all() // or a more filtered list of users
         ]);
-        
+
+        // $messages = Message::where(function ($query) use ($user) {
+        //     $query->where('sender_id', Auth::id())
+        //         ->where('receiver_id', $user->id);
+        // })->orWhere(function ($query) use ($user) {
+        //     $query->where('sender_id', $user->id)
+        //         ->where('receiver_id', Auth::id());
+        // })->orderBy('created_at')->get();
+
+        // // Get distinct users from messages
+        // $userIds = $messages->pluck('sender_id')->merge($messages->pluck('receiver_id'))->unique();
+        // $users = User::whereIn('id', $userIds)->get();
+
+        // return view('messages.create', [
+        //     'messages' => $messages,
+        //     'currentUser' => Auth::user(),
+        //     'receiver' => $user,
+        //     'users' => $users
+        // ]);
     }
 
 
@@ -147,6 +165,20 @@ class MessageController extends Controller
 
         return redirect()->route('messages.index')->with('success', 'Message marked as read.');
     }
+    public function markMessagesAsRead($userId)
+    {
+        $currentUser = Auth::id();
+
+        // Fetch messages for this conversation
+        Message::where(function ($query) use ($currentUser, $userId) {
+            $query->where('sender_id', $currentUser)
+                ->where('receiver_id', $userId);
+        })->orWhere(function ($query) use ($currentUser, $userId) {
+            $query->where('sender_id', $userId)
+                ->where('receiver_id', $currentUser);
+        })->update(['is_read' => true]);
+    }
+
 
     public function showConversation(User $user)
     {

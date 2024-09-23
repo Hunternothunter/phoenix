@@ -67,6 +67,21 @@
         border-top-right-radius: 1rem;
         border-bottom-right-radius: 1rem;
     }
+
+    .iconBtn {
+        cursor: pointer;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+    }
+
+    .iconBtn:hover {
+        background-color: #eeeeee;
+    }
 </style>
 
 <body>
@@ -154,9 +169,9 @@
                 @auth
                     <div class="container-fluid">
                         <a href="/" class="btn btn-lg me-2 rounded-circle">
-                            <h1>{{ __('H') }}</h1>
+                            <i class="fa-solid fa-heading icon-large"></i>
                         </a>
-                        
+
                         {{-- <div class="d-flex justify-content-center flex-grow-1 align-items-center gap-4 mx-3">
                             <a href="{{ route('home') }}"
                                 class="btn btn-transparent btn-lg position-relative nav-btn {{ request()->routeIs('home') ? 'active' : '' }}">
@@ -202,7 +217,8 @@
                             <div class="d-flex justify-content-center flex-grow-1 align-items-center gap-4 mx-3">
                                 <a href="/"
                                     class="btn btn-lg position-relative nav-btn {{ request()->routeIs('home') ? 'active' : '' }}">
-                                    <i class="fas fa-home fa-xl"></i>
+                                    <i
+                                        class="fas fa-home fa-xl {{ request()->routeIs('home') ? 'text-primary' : 'text-dark' }}"></i>
                                     <span
                                         class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('home') ? '' : 'd-none' }}"
                                         style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
@@ -210,7 +226,8 @@
 
                                 <a href="{{ route('watch.show', Auth::user()->id) }}"
                                     class="btn btn-lg position-relative nav-btn">
-                                    <i class="fas fa-tv fa-xl"></i>
+                                    <i
+                                        class="fas fa-tv fa-xl {{ request()->routeIs('watch.show') ? 'text-primary' : 'text-dark' }}"></i>
                                     <span
                                         class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('watch.show') ? '' : 'd-none' }}"
                                         style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
@@ -218,7 +235,8 @@
 
                                 <a href="{{ route('profile.show', Auth::user()->username) }}"
                                     class="btn btn-lg position-relative nav-btn {{ request()->routeIs('profile.show', Auth::user()->username) ? 'active' : '' }}">
-                                    <i class="fas fa-user fa-xl"></i>
+                                    <i
+                                        class="fas fa-user fa-xl {{ request()->routeIs('profile.show', Auth::user()->username) ? 'text-primary' : 'text-dark' }}"></i>
                                     <span
                                         class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('profile.show', Auth::user()->username) ? '' : 'd-none' }}"
                                         style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
@@ -232,14 +250,193 @@
                                         <a class="nav-icon dropdown-toggle" href="#" id="messagesDropdown"
                                             data-bs-toggle="dropdown">
                                             <div class="position-relative">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 512 512"><!-- SVG code --></svg>
+                                                <i class="fa-brands fa-facebook-messenger text-dark"></i>
                                                 @if (Auth::user()->unreadMessagesCount() > 0)
                                                     <span
                                                         class="indicator">{{ Auth::user()->unreadMessagesCount() }}</span>
                                                 @endif
                                             </div>
                                         </a>
+
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <div class="row m-1">
+                                                <div class="col col-md-12">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <h2 class="ms-3">Chats</h2>
+                                                        <div class="d-flex gap-2">
+                                                            <a href="#Options" class="btn rounded-cicrle iconBtn"><i
+                                                                    class="fa-solid fa-ellipsis"></i></a>
+                                                            <a href="#SeeAllMessages" class="btn rounded-cicrle iconBtn"><i
+                                                                    class="fa-solid fa-maximize"></i></a>
+                                                            <a href="#NewMessage" class="btn rounded-cicrle iconBtn"><i
+                                                                    class="fa-solid fa-pen-to-square"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row m-2">
+                                                <div class="col col-md-12">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text rounded-start">
+                                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control form-control-lg rounded-end"
+                                                            placeholder="Search Messenger">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- <div class="row">
+                                                <div class="col">
+                                                    @php
+                                                        $users = \App\Models\User::all();
+                                                        $currentUser = Auth::user();
+                                                    @endphp
+
+                                                    @foreach ($users as $user)
+                                                        @if ($currentUser->sentMessages()->where('receiver_id', $user->id)->exists() ||
+    $currentUser->receivedMessages()->where('sender_id', $user->id)->exists())
+                                                            @php
+                                                                $latestMessage = $currentUser
+                                                                    ->sentMessages()
+                                                                    ->where('receiver_id', $user->id)
+                                                                    ->orWhere(function ($query) use ($user) {
+                                                                        $query
+                                                                            ->where('sender_id', $user->id)
+                                                                            ->where('receiver_id', Auth::id());
+                                                                    })
+                                                                    ->orderBy('created_at', 'desc')
+                                                                    ->first();
+
+                                                                $hasUnreadMessages = $user->unreadMessages()->exists();
+                                                            @endphp
+
+                                                            <a href="{{ route('messages.create', $user->id) }}"
+                                                                class="list-group-item list-group-item-action border-0 m-3 w-auto"
+                                                                onclick="even.preventDefault(); markAsRead({{ $user->id }})">
+                                                                <div class="d-flex justify-content-center align-items-center"
+                                                                    style="height: 60px;"
+                                                                    onmouseover="this.style.backgroundColor='#eeeeee';"
+                                                                    onmouseout="this.style.backgroundColor='';">
+                                                                    <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                                                        class="rounded-circle shadow-sm border border-1"
+                                                                        alt="{{ $user->username }}" width="50"
+                                                                        height="50">
+                                                                    <div class="flex-grow-1 ms-2">
+                                                                        <strong>{{ $user->firstname }}
+                                                                            {{ $user->lastname }}</strong>
+                                                                        <p class="mb-0">
+                                                                            @if ($latestMessage)
+                                                                                {{ $latestMessage->sender_id === Auth::id() ? 'You: ' : '' }}{{ Str::limit($latestMessage->message, 35, '...') }}
+                                                                            @endif
+                                                                            @if ($latestMessage)
+                                                                                <span class="text-muted">
+                                                                                    •
+                                                                                    {{ customTimeDiff($latestMessage->created_at) }}
+                                                                                </span>
+                                                                            @endif
+                                                                        </p>
+                                                                    </div>
+                                                                    @if ($hasUnreadMessages)
+                                                                        <i
+                                                                            class="fa-solid fa-circle text-primary icon-small float-end p-3"></i>
+                                                                    @endif
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </div> --}}
+                                            <div class="row">
+                                                <div class="col">
+                                                    @php
+                                                        $currentUser = Auth::user();
+                                                        $usersWithMessages = [];
+
+                                                        // Collect users with their latest messages
+                                                        foreach (\App\Models\User::all() as $user) {
+                                                            if (
+                                                                $currentUser
+                                                                    ->sentMessages()
+                                                                    ->where('receiver_id', $user->id)
+                                                                    ->exists() ||
+                                                                $currentUser
+                                                                    ->receivedMessages()
+                                                                    ->where('sender_id', $user->id)
+                                                                    ->exists()
+                                                            ) {
+                                                                $latestMessage = $currentUser
+                                                                    ->sentMessages()
+                                                                    ->where('receiver_id', $user->id)
+                                                                    ->orWhere(function ($query) use ($user) {
+                                                                        $query
+                                                                            ->where('sender_id', $user->id)
+                                                                            ->where('receiver_id', Auth::id());
+                                                                    })
+                                                                    ->orderBy('created_at', 'desc')
+                                                                    ->first();
+
+                                                                $usersWithMessages[] = [
+                                                                    'user' => $user,
+                                                                    'latestMessage' => $latestMessage,
+                                                                    'hasUnreadMessages' => $user
+                                                                        ->unreadMessages()
+                                                                        ->exists(),
+                                                                ];
+                                                            }
+                                                        }
+
+                                                        // Sort users by the latest message created_at timestamp
+                                                        usort($usersWithMessages, function ($a, $b) {
+                                                            return $b['latestMessage']->created_at <=>
+                                                                $a['latestMessage']->created_at;
+                                                        });
+                                                    @endphp
+
+                                                    @foreach ($usersWithMessages as $item)
+                                                        @php
+                                                            $user = $item['user'];
+                                                            $latestMessage = $item['latestMessage'];
+                                                            $hasUnreadMessages = $item['hasUnreadMessages'];
+                                                        @endphp
+
+                                                        <a href="{{ route('messages.create', $user->id) }}"
+                                                            class="list-group-item list-group-item-action border-0 m-3 w-auto">
+                                                            {{-- onclick="event.preventDefault(); markAsRead({{ $user->id }})" --}}
+                                                            <div class="d-flex justify-content-center align-items-center"
+                                                                style="height: 60px;"
+                                                                onmouseover="this.style.backgroundColor='#eeeeee';"
+                                                                onmouseout="this.style.backgroundColor='';">
+                                                                <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                                                    class="rounded-circle shadow-sm border border-1"
+                                                                    alt="{{ $user->username }}" width="50"
+                                                                    height="50">
+                                                                <div class="flex-grow-1 ms-2">
+                                                                    <strong>{{ $user->firstname }}
+                                                                        {{ $user->lastname }}</strong>
+                                                                    <p class="mb-0">
+                                                                        @if ($latestMessage)
+                                                                            {{ $latestMessage->sender_id === Auth::id() ? 'You: ' : '' }}{{ Str::limit($latestMessage->message, 35, '...') }}
+                                                                            <span class="text-muted">
+                                                                                •
+                                                                                {{ customTimeDiff($latestMessage->created_at) }}
+                                                                            </span>
+                                                                        @else
+                                                                            No messages available
+                                                                        @endif
+                                                                    </p>
+                                                                </div>
+                                                                @if (!$hasUnreadMessages)
+                                                                    <i
+                                                                        class="fa-solid fa-circle text-primary icon-small float-end p-3"></i>
+                                                                @endif
+                                                            </div>
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </li>
 
@@ -249,8 +446,9 @@
                                         <a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown"
                                             data-bs-toggle="dropdown">
                                             <div class="position-relative">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 448 512"><!-- SVG code --></svg>
+                                                {{-- <svg xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 448 512"><!-- SVG code --></svg> --}}
+                                                <i class="fa-solid fa-bell text-dark"></i>
                                                 @if (Auth::user()->unreadNotificationsCount())
                                                     <span
                                                         class="indicator">{{ Auth::user()->unreadNotificationsCount() }}</span>
@@ -340,6 +538,20 @@
     @stack('scripts')
 
     <script>
+        function markAsRead(userId) {
+            fetch(`/messages/mark-read/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                },
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Failed to mark messages as read.');
+                }
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
 
             // Add event listener to the toggle button

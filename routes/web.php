@@ -129,9 +129,12 @@ Route::middleware('auth')->group(function () {
 
     // Message routes
     Route::resource('messages', MessageController::class)->only(['index', 'create', 'store', 'show']);
+    Route::get('messages/e2ee/t/{user}/i', [MessageController::class, 'index'])->name('messages.index');
     Route::get('messages/e2ee/t/{user}', [MessageController::class, 'create'])->name('messages.create');
     Route::get('messages/{user}', [MessageController::class, 'showConversation'])->name('messages.showConversation');
-    Route::post('messages/{message}/mark-as-read', [MessageController::class, 'markAsRead'])->name('messages.markAsRead');
+    // Route::post('messages/{message}/mark-as-read', [MessageController::class, 'markAsRead'])->name('messages.markAsRead');
+    Route::post('/messages/mark-read/{userId}', [MessageController::class, 'markMessagesAsRead'])->name('messages.markRead');
+
 });
 
 // Watch routes

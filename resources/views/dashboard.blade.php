@@ -85,35 +85,35 @@
                             <li class="mb-1">
                                 <a href="#"
                                     class="btn btn-lg text-dark w-100 text-start hover-effect d-flex align-items-center">
-                                    <i class="fas fa-user-friends me-2 icon-large"></i>
+                                    <i class="fas fa-user-friends me-2 icon-large text-primary"></i>
                                     Friends
                                 </a>
                             </li>
                             <li class="mb-1">
                                 <a href="#"
                                     class="btn btn-lg text-dark w-100 text-start hover-effect d-flex align-items-center">
-                                    <i class="fas fa-clock me-2 icon-large"></i>
+                                    <i class="fas fa-clock me-2 icon-large text-warning"></i>
                                     Memories
                                 </a>
                             </li>
                             <li class="mb-1">
                                 <a href="#"
                                     class="btn btn-lg text-dark w-100 text-start hover-effect d-flex align-items-center">
-                                    <i class="fas fa-users me-2 icon-large"></i>
+                                    <i class="fas fa-users me-2 icon-large text-success"></i>
                                     Groups
                                 </a>
                             </li>
                             <li class="mb-1">
                                 <a href="#"
                                     class="btn btn-lg text-dark w-100 text-start hover-effect d-flex align-items-center">
-                                    <i class="fas fa-bookmark me-2 icon-large"></i>
+                                    <i class="fas fa-bookmark me-2 icon-large text-info"></i>
                                     Saved
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('watch.index') }}"
                                     class="btn btn-lg text-dark w-100 text-start hover-effect d-flex align-items-center">
-                                    <i class="fas fa-video me-2 icon-large"></i>
+                                    <i class="fas fa-video me-2 icon-large text-danger"></i>
                                     Video
                                 </a>
                             </li>
@@ -156,7 +156,8 @@
                                             style="background-color: transparent; border: 1px solid transparent;"
                                             onmouseover="this.style.backgroundColor='#EBEBEB'; this.style.borderColor='#EBEBEB';"
                                             onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='transparent';">
-                                            <i class="align-middle me-2" data-lucide="video"></i>
+                                            {{-- <i class="align-middle me-2" data-lucide="video"></i> --}}
+                                            <i class="fas fa-video me-2 icon-large text-danger"></i>
                                             <span class="align-middle fw-bold">Live video</span>
                                         </button>
 
@@ -165,7 +166,8 @@
                                             style="background-color: transparent; border: 1px solid transparent;"
                                             onmouseover="this.style.backgroundColor='#EBEBEB'; this.style.borderColor='#EBEBEB';"
                                             onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='transparent';">
-                                            <i class="align-middle me-2" data-lucide="images"></i>
+                                            {{-- <i class="align-middle me-2" data-lucide="images"></i> --}}
+                                            <i class="fa-solid fa-images me-2 icon-large text-primary"></i>
                                             <span class="align-middle fw-bold">Photo/Video</span>
                                         </button>
                                     </div>
@@ -402,7 +404,7 @@
                                     class="text-decoration-none text-dark" data-bs-toggle="popover"
                                     data-bs-trigger="hover" data-bs-placement="bottom" data-bs-html="true"
                                     data-bs-content="<div class='text-center'>
-                                                            <img src='{{ $post->user->profile_pictures ? asset('storage/profile_pictures/' . $post->user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}' width='100' height='100' class='rounded-circle mb-2'>
+                                                            <img src='{{ $post->user->profile_pictures ? asset('storage/profile_pictures/' . $post->user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}' width='100' height='100' class='rounded-circle mb-2' style='max-width: 100%; max-height: 100%; object-fit: contain;'>
                                                             <a href='{{ route('profile.show', $post->user->username) }}'>
                                                                 <h5 class='fw-bolder'>{{ $post->user->username }}</h5>
                                                             </a>

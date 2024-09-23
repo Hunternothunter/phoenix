@@ -13,7 +13,7 @@
                         </div>
                     </div>
 
-                    @foreach ($users as $user)
+                    {{-- @foreach ($users as $user)
                         <a href="{{ route('messages.create', $user->id) }}"
                             class="list-group-item list-group-item-action border-0 {{ isset($receiver) && $receiver->id === $user->id ? 'active' : '' }}">
                             <div class="badge bg-success float-end">{{ $user->unreadMessagesCount() }}</div>
@@ -27,8 +27,80 @@
                                 </div>
                             </div>
                         </a>
-                    @endforeach
+                    @endforeach --}}
+                    @php
+                        $currentUser = Auth::user();
+                        $usersWithLatestMessages = [];
 
+                        // Collect users with their latest messages
+                        foreach (\App\Models\User::all() as $user) {
+                            if (
+                                $currentUser
+                                    ->sentMessages()
+                                    ->where('receiver_id', $user->id)
+                                    ->exists() ||
+                                $currentUser
+                                    ->receivedMessages()
+                                    ->where('sender_id', $user->id)
+                                    ->exists()
+                            ) {
+                                $latestMessage = $currentUser
+                                    ->sentMessages()
+                                    ->where('receiver_id', $user->id)
+                                    ->orWhere(function ($query) use ($user) {
+                                        $query->where('sender_id', $user->id)->where('receiver_id', Auth::id());
+                                    })
+                                    ->orderBy('created_at', 'desc')
+                                    ->first();
+
+                                $hasUnreadMessages = $user->unreadMessages()->exists();
+
+                                // Store user and latest message details
+                                $usersWithLatestMessages[] = [
+                                    'user' => $user,
+                                    'latestMessage' => $latestMessage,
+                                    'hasUnreadMessages' => $hasUnreadMessages,
+                                ];
+                            }
+                        }
+
+                        // Sort users by latest message timestamp
+                        usort($usersWithLatestMessages, function ($a, $b) {
+                            return $b['latestMessage']->created_at <=> $a['latestMessage']->created_at;
+                        });
+                    @endphp
+
+                    @foreach ($usersWithLatestMessages as $item)
+                        @php
+                            $user = $item['user'];
+                            $latestMessage = $item['latestMessage'];
+                            $hasUnreadMessages = $item['hasUnreadMessages'];
+                        @endphp
+
+                        <a href="{{ route('messages.create', $user->id) }}"
+                            class="list-group-item list-group-item-action border-0 {{ isset($receiver) && $receiver->id === $user->id ? 'active' : '' }}">
+                            <div class="d-flex align-items-start">
+                                <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                    class="rounded-circle me-1" alt="{{ $user->username }}" width="40"
+                                    height="40">
+                                <div class="flex-grow-1 ms-3">
+                                    <strong>{{ $user->firstname }} {{ $user->lastname }}</strong>
+                                    <p class="mb-0">
+                                        @if ($latestMessage)
+                                            {{ $latestMessage->sender_id === Auth::id() ? 'You: ' : '' }}{{ Str::limit($latestMessage->message, 35, '...') }}
+                                            <span class="text-muted">•
+                                                {{ customTimeDiff($latestMessage->created_at) }}</span>
+                                        @else
+                                            No messages available
+                                        @endif
+                                    </p>
+                                </div>
+                                @if (!$hasUnreadMessages)
+                                    <i class="fa-solid fa-circle text-primary icon-small float-end"></i>
+                                @endif
+                            </div>
+                        </a>
+                    @endforeach
 
                     <hr class="d-block d-lg-none mt-1 mb-0" />
                 </div>
@@ -93,7 +165,8 @@
                                     <div class="input-group">
                                         <input type="text" name="message" id="message"
                                             class="form-control form-control-lg" required>
-                                        <button type="submit" class="btn btn-primary"><i data-lucide="send-horizontal"></i></button>
+                                        <button type="submit" class="btn btn-primary"><i
+                                                data-lucide="send-horizontal"></i></button>
                                     </div>
                                 </div>
                             </form>
