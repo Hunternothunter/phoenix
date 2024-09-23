@@ -13,26 +13,10 @@
                         </div>
                     </div>
 
-                    {{-- @foreach ($users as $user)
-                        <a href="{{ route('messages.create', $user->id) }}"
-                            class="list-group-item list-group-item-action border-0 {{ isset($receiver) && $receiver->id === $user->id ? 'active' : '' }}">
-                            <div class="badge bg-success float-end">{{ $user->unreadMessagesCount() }}</div>
-                            <div class="d-flex align-items-start">
-                                <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
-                                    class="rounded-circle me-1" alt="{{ $user->username }}" width="40"
-                                    height="40">
-                                <div class="flex-grow-1 ms-3">
-                                    {{ $user->firstname }}
-                                    <div class="small"><span class="fas fa-circle chat-online"></span> Online</div>
-                                </div>
-                            </div>
-                        </a>
-                    @endforeach --}}
                     @php
                         $currentUser = Auth::user();
                         $usersWithLatestMessages = [];
 
-                        // Collect users with their latest messages
                         foreach (\App\Models\User::all() as $user) {
                             if (
                                 $currentUser
@@ -55,7 +39,6 @@
 
                                 $hasUnreadMessages = $user->unreadMessages()->exists();
 
-                                // Store user and latest message details
                                 $usersWithLatestMessages[] = [
                                     'user' => $user,
                                     'latestMessage' => $latestMessage,
@@ -64,7 +47,6 @@
                             }
                         }
 
-                        // Sort users by latest message timestamp
                         usort($usersWithLatestMessages, function ($a, $b) {
                             return $b['latestMessage']->created_at <=> $a['latestMessage']->created_at;
                         });
@@ -80,7 +62,7 @@
                         <a href="{{ route('messages.create', $user->id) }}"
                             class="list-group-item list-group-item-action border-0 {{ isset($receiver) && $receiver->id === $user->id ? 'active' : '' }}">
                             <div class="d-flex align-items-start">
-                                <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                     class="rounded-circle me-1" alt="{{ $user->username }}" width="40"
                                     height="40">
                                 <div class="flex-grow-1 ms-3">
@@ -109,7 +91,7 @@
                         <div class="py-2 px-4 border-bottom d-none d-lg-block">
                             <div class="d-flex align-items-start align-items-center py-1">
                                 <div class="position-relative">
-                                    <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                    <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                         class="rounded-circle me-1" alt="{{ $user->username }}" width="40"
                                         height="40">
                                 </div>
@@ -134,7 +116,7 @@
                                     <div
                                         class="{{ $message->sender_id === $currentUser->id ? 'chat-message-right' : 'chat-message-left' }} pb-4">
                                         <div>
-                                            <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                            <img src="{{ $message->sender->profile_picture ? asset('storage/' . $message->sender->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                                 class="rounded-circle me-1" alt="{{ $message->sender->firstname }}"
                                                 width="40" height="40">
                                             <div class="text-muted small text-nowrap mt-2">

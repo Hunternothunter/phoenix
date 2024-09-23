@@ -276,78 +276,16 @@
                                             </div>
                                             <div class="row m-2">
                                                 <div class="col col-md-12">
-                                                    <div class="input-group">
+                                                    <div class="input-group rounded">
                                                         <span class="input-group-text rounded-start">
                                                             <i class="fa-solid fa-magnifying-glass"></i>
                                                         </span>
                                                         <input type="text"
-                                                            class="form-control form-control-lg rounded-end"
+                                                            class="form-control form-control-lg rounded-end" style="max-width: 100%;"
                                                             placeholder="Search Messenger">
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {{-- <div class="row">
-                                                <div class="col">
-                                                    @php
-                                                        $users = \App\Models\User::all();
-                                                        $currentUser = Auth::user();
-                                                    @endphp
-
-                                                    @foreach ($users as $user)
-                                                        @if ($currentUser->sentMessages()->where('receiver_id', $user->id)->exists() ||
-    $currentUser->receivedMessages()->where('sender_id', $user->id)->exists())
-                                                            @php
-                                                                $latestMessage = $currentUser
-                                                                    ->sentMessages()
-                                                                    ->where('receiver_id', $user->id)
-                                                                    ->orWhere(function ($query) use ($user) {
-                                                                        $query
-                                                                            ->where('sender_id', $user->id)
-                                                                            ->where('receiver_id', Auth::id());
-                                                                    })
-                                                                    ->orderBy('created_at', 'desc')
-                                                                    ->first();
-
-                                                                $hasUnreadMessages = $user->unreadMessages()->exists();
-                                                            @endphp
-
-                                                            <a href="{{ route('messages.create', $user->id) }}"
-                                                                class="list-group-item list-group-item-action border-0 m-3 w-auto"
-                                                                onclick="even.preventDefault(); markAsRead({{ $user->id }})">
-                                                                <div class="d-flex justify-content-center align-items-center"
-                                                                    style="height: 60px;"
-                                                                    onmouseover="this.style.backgroundColor='#eeeeee';"
-                                                                    onmouseout="this.style.backgroundColor='';">
-                                                                    <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
-                                                                        class="rounded-circle shadow-sm border border-1"
-                                                                        alt="{{ $user->username }}" width="50"
-                                                                        height="50">
-                                                                    <div class="flex-grow-1 ms-2">
-                                                                        <strong>{{ $user->firstname }}
-                                                                            {{ $user->lastname }}</strong>
-                                                                        <p class="mb-0">
-                                                                            @if ($latestMessage)
-                                                                                {{ $latestMessage->sender_id === Auth::id() ? 'You: ' : '' }}{{ Str::limit($latestMessage->message, 35, '...') }}
-                                                                            @endif
-                                                                            @if ($latestMessage)
-                                                                                <span class="text-muted">
-                                                                                    •
-                                                                                    {{ customTimeDiff($latestMessage->created_at) }}
-                                                                                </span>
-                                                                            @endif
-                                                                        </p>
-                                                                    </div>
-                                                                    @if ($hasUnreadMessages)
-                                                                        <i
-                                                                            class="fa-solid fa-circle text-primary icon-small float-end p-3"></i>
-                                                                    @endif
-                                                                </div>
-                                                            </a>
-                                                        @endif
-                                                    @endforeach
-                                                </div>
-                                            </div> --}}
                                             <div class="row">
                                                 <div class="col">
                                                     @php
@@ -394,46 +332,64 @@
                                                         });
                                                     @endphp
 
-                                                    @foreach ($usersWithMessages as $item)
-                                                        @php
-                                                            $user = $item['user'];
-                                                            $latestMessage = $item['latestMessage'];
-                                                            $hasUnreadMessages = $item['hasUnreadMessages'];
-                                                        @endphp
+                                                    @if ($usersWithMessages)
+                                                        @foreach ($usersWithMessages as $item)
+                                                            @php
+                                                                $user = $item['user'];
+                                                                $latestMessage = $item['latestMessage'];
+                                                                $hasUnreadMessages = $item['hasUnreadMessages'];
+                                                            @endphp
 
-                                                        <a href="{{ route('messages.create', $user->id) }}"
-                                                            class="list-group-item list-group-item-action border-0 m-3 w-auto">
-                                                            {{-- onclick="event.preventDefault(); markAsRead({{ $user->id }})" --}}
-                                                            <div class="d-flex justify-content-center align-items-center"
-                                                                style="height: 60px;"
-                                                                onmouseover="this.style.backgroundColor='#eeeeee';"
-                                                                onmouseout="this.style.backgroundColor='';">
-                                                                <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
-                                                                    class="rounded-circle shadow-sm border border-1"
-                                                                    alt="{{ $user->username }}" width="50"
-                                                                    height="50">
-                                                                <div class="flex-grow-1 ms-2">
-                                                                    <strong>{{ $user->firstname }}
-                                                                        {{ $user->lastname }}</strong>
-                                                                    <p class="mb-0">
-                                                                        @if ($latestMessage)
-                                                                            {{ $latestMessage->sender_id === Auth::id() ? 'You: ' : '' }}{{ Str::limit($latestMessage->message, 35, '...') }}
-                                                                            <span class="text-muted">
-                                                                                •
-                                                                                {{ customTimeDiff($latestMessage->created_at) }}
-                                                                            </span>
-                                                                        @else
-                                                                            No messages available
-                                                                        @endif
-                                                                    </p>
+                                                            <a href="{{ route('messages.create', $user->id) }}"
+                                                                class="list-group-item list-group-item-action border-0 m-3 w-auto">
+                                                                {{-- onclick="event.preventDefault(); markAsRead({{ $user->id }})" --}}
+                                                                <div class="d-flex justify-content-center align-items-center"
+                                                                    style="height: 60px;"
+                                                                    onmouseover="this.style.backgroundColor='#eeeeee';"
+                                                                    onmouseout="this.style.backgroundColor='';">
+                                                                    <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
+                                                                        class="rounded-circle shadow-sm border border-1"
+                                                                        alt="{{ $user->username }}" width="50"
+                                                                        height="50">
+                                                                    <div class="flex-grow-1 ms-2">
+                                                                        <strong>{{ $user->firstname }}
+                                                                            {{ $user->lastname }}</strong>
+                                                                        <p class="mb-0">
+                                                                            @if ($latestMessage)
+                                                                                {{ $latestMessage->sender_id === Auth::id() ? 'You: ' : '' }}{{ Str::limit($latestMessage->message, 35, '...') }}
+                                                                                <span class="text-muted">
+                                                                                    •
+                                                                                    {{ customTimeDiff($latestMessage->created_at) }}
+                                                                                </span>
+
+                                                                                {{-- @if (!$message->is_read)
+                                                                            <form
+                                                                                action="{{ route('messages.markAsRead', $message->id) }}"
+                                                                                method="POST">
+                                                                                @csrf
+                                                                                <button type="submit" class="btn btn-success d-none"></button>
+                                                                            </form>
+                                                                        @endif --}}
+                                                                            @else
+                                                                                No messages available
+                                                                            @endif
+                                                                        </p>
+                                                                    </div>
+                                                                    @if (!$hasUnreadMessages)
+                                                                        <i
+                                                                            class="fa-solid fa-circle text-primary icon-small float-end p-3"></i>
+                                                                    @endif
                                                                 </div>
-                                                                @if (!$hasUnreadMessages)
-                                                                    <i
-                                                                        class="fa-solid fa-circle text-primary icon-small float-end p-3"></i>
-                                                                @endif
+                                                            </a>
+                                                        @endforeach
+                                                    @else
+                                                        <div class="d-flex justify-content-center align-items-center"
+                                                            style="height: 60px;">
+                                                            <div class="flex-grow-1 ms-2 text-center">
+                                                                <strong>{{ __('No conversations available') }}</strong>
                                                             </div>
-                                                        </a>
-                                                    @endforeach
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -460,7 +416,7 @@
 
                                 <li class="nav-item dropdown">
                                     <a class="nav-link d-flex align-items-center" data-bs-toggle="dropdown">
-                                        <img src="{{ Auth::user()->profile_pictures ? asset('storage/profile_pictures/' . Auth::user()->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                        <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                             class="rounded-circle me-2" alt="{{ Auth::user()->firstname }}"
                                             width="45" height="45" style="border: 1px solid #f0f0f0;" />
                                     </a>

@@ -23,7 +23,7 @@ class ProfileUpdateRequest extends FormRequest
             'gender' => ['nullable', 'string', 'max:25'],
             'mobile_num' => ['nullable', 'string', 'max:30'],
             'profile_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'username' => ['required', 'string', 'max:16', Rule::unique(User::class)->ignore($this->user()->id)],
+            // 'username' => ['required', 'string', 'max:16', Rule::unique(User::class)->ignore($this->user()->id)],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
         ];
     }

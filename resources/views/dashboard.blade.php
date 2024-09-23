@@ -73,7 +73,7 @@
                             <li class="mb-1">
                                 <a href="{{ route('profile.show', Auth::user()->username) }}"
                                     class="btn btn-lg text-dark w-100 text-start hover-effect d-flex align-items-center">
-                                    <img src="{{ Auth::user()->profile_pictures ? asset('storage/profile_pictures/' . Auth::user()->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                    <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                         class="rounded-circle me-2" alt="{{ Auth::user()->firstname }}" width="35"
                                         height="35" style="border: 1px solid #f0f0f0;" />
                                     <div class="d-flex flex-column">
@@ -131,7 +131,7 @@
                                 <!-- User Profile Section -->
                                 <div class="col-auto d-flex justify-content-center mb-2 mb-md-0">
                                     <a href="{{ route('profile.show', Auth::user()->username) }}">
-                                        <img src="{{ Auth::user()->profile_pictures ? asset('storage/profile_pictures/' . Auth::user()->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                        <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                             width="50" height="50"
                                             class="rounded-circle border border-light shadow-sm">
                                     </a>
@@ -404,14 +404,14 @@
                                     class="text-decoration-none text-dark" data-bs-toggle="popover"
                                     data-bs-trigger="hover" data-bs-placement="bottom" data-bs-html="true"
                                     data-bs-content="<div class='text-center'>
-                                                            <img src='{{ $post->user->profile_pictures ? asset('storage/profile_pictures/' . $post->user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}' width='100' height='100' class='rounded-circle mb-2' style='max-width: 100%; max-height: 100%; object-fit: contain;'>
+                                                            <img src='{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}' width='100' height='100' class='rounded-circle mb-2' style='max-width: 100%; max-height: 100%; object-fit: contain;'>
                                                             <a href='{{ route('profile.show', $post->user->username) }}'>
                                                                 <h5 class='fw-bolder'>{{ $post->user->username }}</h5>
                                                             </a>
                                                             <h5>{{ $post->user->firstname }} {{ $post->user->lastname }}</h5>
                                                             <p>{{ $post->user->bio ?? 'No bio available' }}</p>
                                                         </div>">
-                                    <img src="{{ $post->user->profile_pictures ? asset('storage/profile_pictures/' . $post->user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                    <img src="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                         width="50" height="50" class="rounded-circle me-3 border border-sm"
                                         alt="{{ $post->user->firstname }}">
                                 </a>
@@ -422,7 +422,7 @@
                                             class="text-decoration-none text-dark" data-bs-toggle="popover"
                                             data-bs-trigger="hover" data-bs-placement="bottom" data-bs-html="true"
                                             data-bs-content="<div class='text-center'>
-                                                                    <img src='{{ $post->user->profile_pictures ? asset('storage/profile_pictures/' . $post->user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}' width='100' height='100' class='rounded-circle mb-2'>
+                                                                    <img src='{{ $post->user->profile_pictures ? asset('storage/' . $post->user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}' width='100' height='100' class='rounded-circle mb-2'>
                                                                     <a href='{{ route('profile.show', $post->user->username) }}'>
                                                                         <h5 class='fw-bolder'>{{ $post->user->username }}</h5>
                                                                     </a>
@@ -512,7 +512,7 @@
                                             data-post-image="{{ asset('storage/' . $post->image) }}"
                                             data-user-link="{{ route('profile.show', $post->user->username) }}"
                                             data-user-name="{{ $post->user->username }}"
-                                            data-user-profile="{{ $post->user->profile_pictures ? asset('storage/profile_pictures/' . $post->user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}">
+                                            data-user-profile="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}">
                                             <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid pe-1"
                                                 alt="{{ $post->content }}">
                                         </button>
@@ -562,7 +562,7 @@
                                             data-post-image="{{ asset('storage/' . $post->image) }}"
                                             data-user-link="{{ route('profile.show', $post->user->username) }}"
                                             data-user-name="{{ $post->user->username }}"
-                                            data-user-profile="{{ $post->user->profile_pictures ? asset('storage/profile_pictures/' . $post->user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}">
+                                            data-user-profile="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}">
                                             <i class="align-middle" data-lucide="message-circle"></i>
                                             @if ($commentCount > 0)
                                                 {{ $commentCount }}
@@ -596,7 +596,7 @@
             <div class="col-12 col-md-3 right-column  d-none d-md-block">
                 <div class="card mb-3">
                     <div class="card-body text-center">
-                        <img src="{{ Auth::user()->profile_pictures ? asset('storage/profile_pictures/' . Auth::user()->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                        <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                             width="128" height="128" class="rounded-circle border border-light shadow-sm"
                             alt="{{ Auth::user()->firstname }}">
                         <h4 class="card-title mb-0">{{ $user->firstname . ' ' . $user->lastname }}</h4>
@@ -630,7 +630,7 @@
                     <div class="card-body">
                         @foreach ($user->following as $followedUser)
                             <div class="d-flex align-items-start">
-                                <img src="{{ $followedUser->profile_pictures ? asset('storage/profile_pictures' . $followedUser->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                                <img src="{{ $followedUser->profile_picture ? asset('storage/' . $followedUser->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                     width="30" height="30" class="rounded-circle me-2"
                                     alt="{{ $followedUser->user->firstname }}">
                                 <div class="d-flex flex-column justify-content-center align-item-center">
@@ -666,7 +666,7 @@
                     <div class="card-body h-100">
                         @foreach ($activities as $activity)
                             <div class="d-flex align-items-start">
-                                <img src="{{ asset('storage/' . $activity->user->profile_pictures) }}" width="36"
+                                <img src="{{ asset('storage/' . $activity->user->profile_picture) }}" width="36"
                                     height="36" class="rounded-circle me-2" alt="{{ $activity->user->name }}">
                                 <div class="flex-grow-1">
                                     <small class="float-end">{{ $activity->created_at->diffForHumans() }}</small>
@@ -711,8 +711,8 @@
                     var comment = response.data.comment;
                     var user = response.data.user;
 
-                    var profilePicture = user.profile_pictures ?
-                        `/storage/profile_pictures/${user.profile_pictures}` :
+                    var profilePicture = user.profile_picture ?
+                        `/storage/${user.profile_picture}` :
                         `/storage/profile_pictures/default-user.png`;
 
                     var commentCard = `
@@ -814,8 +814,8 @@
                                 .user.username;
                             document.getElementById('edit-user-profile-picture').src =
                                 data.user
-                                .profile_pictures ?
-                                `/storage/profile_pictures/${data.user.profile_pictures}` :
+                                .profile_picture ?
+                                `/storage/${data.user.profile_picture}` :
                                 '/storage/profile_pictures/default-user.png';
 
                             document.getElementById('edit-post-content').value = data
@@ -894,7 +894,7 @@
                                                     <div class="card mb-2">
                                                         <div class="card-body">
                                                             <a href="/profile/${comment.user.username}" class="d-flex align-items-center">
-                                                                <img src="${comment.user.profile_pictures ? '/storage/profile_pictures/' + comment.user.profile_pictures : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
+                                                                <img src="${comment.user.profile_picture ? '/storage/' + comment.user.profile_picture : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
                                                                 <h5 class="mb-0 d-inline">${comment.user.username}</h5>
                                                             </a>
                                                             <p class="card-text">${comment.content}</p>
@@ -931,7 +931,7 @@
                                                 <div class="card mb-2">
                                                     <div class="card-body">
                                                         <a href="/profile/${data.comment.user.username}" class="d-flex align-items-center">
-                                                            <img src="${data.comment.user.profile_pictures ? '/storage/profile_pictures/' + data.comment.user.profile_pictures : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
+                                                            <img src="${data.comment.user.profile_picture ? '/storage/' + data.comment.user.profile_picture : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
                                                             <h5 class="mb-0 d-inline">${data.comment.user.username}</h5>
                                                         </a>
                                                         <p class="card-text">${data.comment.content}</p>

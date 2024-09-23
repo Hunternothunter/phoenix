@@ -19,11 +19,10 @@ return new class extends Migration
             $table->date('birthdate')->nullable();
             $table->string('gender')->nullable();
             $table->string('mobile_num')->nullable();
-            $table->string('profile_pictures')->nullable();
+            $table->string('profile_picture')->nullable();
             $table->string('email')->unique();
             $table->string('username')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('profile_picture')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

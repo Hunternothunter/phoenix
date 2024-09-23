@@ -99,17 +99,20 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified']);
 
 // Profile routes
-Route::get('/{username}', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/{username}/f', [ProfileController::class, 'show'])->name('profile.show');
+// Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
+// Route::get('/profile/{id}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+// Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
+// Route::delete('/profile/{id}/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/search', [ProfileController::class, 'search'])->name('profile.search');
-
-    Route::prefix('profile')->group(function () {
-        Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
-        Route::get('{id}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    });
 
     // Post routes
     Route::resource('posts', PostController::class);
@@ -134,7 +137,6 @@ Route::middleware('auth')->group(function () {
     Route::get('messages/{user}', [MessageController::class, 'showConversation'])->name('messages.showConversation');
     // Route::post('messages/{message}/mark-as-read', [MessageController::class, 'markAsRead'])->name('messages.markAsRead');
     Route::post('/messages/mark-read/{userId}', [MessageController::class, 'markMessagesAsRead'])->name('messages.markRead');
-
 });
 
 // Watch routes

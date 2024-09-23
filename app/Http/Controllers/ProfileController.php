@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -56,18 +56,20 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
+        
+        $firstname = ucwords(strtolower($request->firstname));
+        $middlename = $request->middlename ? ucwords(strtolower($request->middlename)) : null;
+        $lastname = ucwords(strtolower($request->lastname));
 
-        $request->validate([
-            'firstname' => ['required', 'string', 'max:255'],
-            'middlename' => ['nullable', 'string', 'max:255'],
-            'lastname' => ['required', 'string', 'max:255'],
-            'birthdate' => ['nullable', 'date', 'before:today'],
-            'gender' => ['nullable', 'string', 'max:25'],
-            'mobile_num' => ['nullable', 'string', 'max:30'],
-            'profile_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'username' => ['required', 'string', 'lowercase', 'email', 'max:16', 'unique:users,username,' . $user->id],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $user->id],
-
+        $user->fill([
+            'firstname' => $firstname,
+            'middlename' => $middlename,
+            'lastname' => $lastname,
+            'email' => $request->email,
+            // 'username' => $request->username,
+            'gender' => $request->gender,
+            'birthdate' => $request->birthdate,
+            'mobile_num' => $request->mobile_num,
         ]);
 
         if ($request->hasFile('profile_picture')) {
@@ -75,22 +77,9 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->profile_picture);
             }
 
-            $file = $request->file('profile_picture');
-            $profilePicturePath = $file->store('profile_pictures', 'public');
-
+            $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
             $user->profile_picture = $profilePicturePath;
         }
-
-        $user->fill($request->only([
-            'firstname',
-            'middlename',
-            'lastname',
-            'email',
-            'username',
-            'gender',
-            'birthdate',
-            'mobile_num'
-        ]));
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
@@ -98,9 +87,9 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return Redirect::route('profile.show', $user->username)
-            ->with('message', 'You successfully updated your profile information.');
+        return Redirect::route('home')->with('message', 'User profile updated successfully.');
     }
+
 
     /**
      * Delete the user's account.

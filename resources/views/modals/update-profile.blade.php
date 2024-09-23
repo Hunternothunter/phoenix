@@ -8,6 +8,7 @@
         @method('patch')
 
         <div class="row g-3">
+            <p>{{ route('profile.update', $user->id) }}</p>
             <div class="col-md-9">
                 <div class="row g-3 mb-3">
                     <div class="col-md-4">
@@ -94,19 +95,6 @@
                         @error('email')
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
-
-                        @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
-                            <div class="mt-3 text-muted">
-                                {{ __('Your email address is unverified.') }}
-                                <button form="send-verification" class="btn btn-link p-0 text-muted" type="submit">
-                                    {{ __('Click here to re-send the verification email.') }}
-                                </button>
-                                @if (session('status') === 'verification-link-sent')
-                                    <p class="mt-2 text-success">
-                                        {{ __('A new verification link has been sent to your email address.') }}</p>
-                                @endif
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -117,7 +105,7 @@
                     <div class="text-center">
                         <img id="image-preview"
                             src="{{ old('profile_picture', $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png')) }}"
-                            alt="Profile picture" class="img-fluid rounded" style="max-width: 120px;" />
+                            alt="Profile picture" class="img-fluid rounded-circle h-100" style="max-width: 120px;" />
                     </div>
                     <input id="profile-image-file" name="profile_picture" type="file" class="d-none"
                         accept="image/*" onchange="previewImage(event)" />
@@ -128,7 +116,7 @@
                             <i class="align-middle me-1" data-lucide="upload"></i> {{ __('Upload Image') }}
                         </a>
                     </div>
-                    @error('profile_picture')
+                    @error('profile_pictures')
                         <div class="form-text text-danger">{{ $message }}</div>
                     @enderror
                 </div>
@@ -137,7 +125,6 @@
 
         <div class="d-flex align-items-center gap-3 mt-2">
             <button class="btn btn-light btn-lg w-100px">{{ __('Discard') }}</button>
-
             <button type="submit" class="btn btn-primary btn-lg w-100px">{{ __('Save') }}</button>
             @if (session('status') === 'profile-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
@@ -147,6 +134,7 @@
             @endif
         </div>
     </form>
+
 
     <script>
         function previewImage(event) {
