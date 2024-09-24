@@ -281,8 +281,8 @@
                                                             <i class="fa-solid fa-magnifying-glass"></i>
                                                         </span>
                                                         <input type="text"
-                                                            class="form-control form-control-lg rounded-end" style="max-width: 100%;"
-                                                            placeholder="Search Messenger">
+                                                            class="form-control form-control-lg rounded-end"
+                                                            style="max-width: 100%;" placeholder="Search Messenger">
                                                     </div>
                                                 </div>
                                             </div>
@@ -507,8 +507,19 @@
                 }
             });
         }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+            }
+        });
 
         document.addEventListener("DOMContentLoaded", function() {
+
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+
 
             // Add event listener to the toggle button
             toggleButton.addEventListener('click', toggleSidebarBehavior);

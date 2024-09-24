@@ -21,7 +21,7 @@
                     <li class="list-group-item d-flex align-items-center user-item">
                         <a href="{{ route('profile.show', $user->username) }}"
                             class="text-decoration-none text-dark d-flex align-items-center w-100">
-                            <img src="{{ $user->profile_pictures ? asset('storage/profile_pictures/' . $user->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                            <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                 alt="Profile Picture" class="rounded-circle"
                                 style="width: 40px; height: 40px; margin-right: 10px;">
                             <div class="ms-2">

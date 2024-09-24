@@ -28,7 +28,7 @@
         <div class="row align-items-start">
             <!-- User Profile Section -->
             <div class="col-auto d-flex justify-content-center mb-2">
-                <img src="{{ Auth::user()->profile_pictures ? asset('storage/profile_pictures/' . Auth::user()->profile_pictures) : asset('storage/profile_pictures/default-user.png') }}"
+                <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                     width="50" height="50" class="rounded-circle border border-light shadow-sm"
                     alt="{{ Auth::user()->firstname }}">
             </div>
@@ -59,7 +59,7 @@
                     <label for="file-upload" class="btn btn-lg me-2 d-flex align-items-center upload-btn">
                         <i class="fs-5 me-2" data-lucide="images"></i>
                         <span class="fs-5 fw-bold">Photo/Video</span>
-                        <input type="file" id="file-upload" name="image" class="d-none" accept="image/*,video/*">
+                        <input type="file" id="file-upload" name="post_media" class="d-none" accept="image/*,video/*">
                     </label>
                     <button type="submit" class="btn btn-primary fs-5 fw-bold">Post</button>
                 </div>

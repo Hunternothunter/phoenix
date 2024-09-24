@@ -55,16 +55,19 @@ class PostController extends Controller
     {
         $request->validate([
             'content' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'post_media' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:1000000',
         ]);
 
         $post = new Post();
         $post->user_id = Auth::id();
         $post->content = $request->input('content');
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('post_images', 'public');
-            $post->image = $imagePath;
+        if ($request->hasFile('post_media')) {
+            // $imagePath = $request->file('image')->store('post_images', 'public');
+            // $post->image = $imagePath;
+            $file = $request->file('post_media');
+            $filePath = $file->store('post_media', 'public');
+            $post->post_media = $filePath;
         }
 
         $post->save();

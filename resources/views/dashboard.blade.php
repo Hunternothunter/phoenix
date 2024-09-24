@@ -178,109 +178,22 @@
                 </div>
 
                 @forelse ($posts as $post)
-                    {{-- <x-modal name="view-post" maxWidth="lg" centered="true" title="Post Details" focusable>
-                            <div class="container">
-                                <div class="row">
-                                    <!-- Image Column -->
-                                    <div class="col-md-5 bg-light">
-                                        <div id="post-image-container" class="mb-3" style="max-height: 400px;">
-                                            <!-- Dynamically added image -->
-                                            @if ($post->image)
-                                                <img src="{{ asset('storage/' . $post->image) }}" alt="Post Image"
-                                                    class="img-fluid w-100 h-100" style="object-fit: contain;">
-                                            @endif
-                                        </div>
-                                    </div>
+                    <x-modal name="view-post" maxWidth="lg" centered="true" title="Post Details" focusable>
+                        <div class="container d-flex flex-column" style="min-height: 400px;">
+                            <div class="row flex-grow-1">
 
-                                    <!-- Content Column -->
-                                    <div class="col-md-7">
-                                        <!-- User Info -->
-                                        <div class="mb-3 d-flex align-items-center justify-content-between">
-                                            <a id="post-user-link"
-                                                href="{{ route('profile.show', $post->user->username) }}"
-                                                class="fw-bold text-body fs-lg d-flex align-items-center">
-                                                <img id="post-user-profile"
-                                                    src="{{ $post->user->profile_picture ? asset('storage/profile_pictures/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
-                                                    width="45" height="45"
-                                                    class="rounded-circle me-2 border border-sm">
-                                                <span id="post-user-name">
-                                                    {{ $post->user->username }}
-                                                </span>
-                                            </a>
-                                            <a class="nav-link d-none d-sm-inline-block cursor-pointer"
-                                                data-bs-toggle="dropdown" data-lucide="ellipsis-vertical">
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                @if (Auth::id() === $post->user_id)
-                                                    <a class='dropdown-item btn-edit-post'
-                                                        href="{{ route('posts.edit', $post->id) }}">
-                                                        <i class="align-middle me-1" data-lucide="pencil"></i>
-                                                        Edit Post
-                                                    </a>
-                                                    <form action="{{ route('posts.destroy', $post->id) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="dropdown-item btn-delete-post" type="submit">
-                                                            <i class="align-middle me-1" data-lucide="trash-2"></i>
-                                                            Delete Post
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <!-- Post Content -->
-                                        <p id="post-content">{{ $post->content }}</p>
-
-                                        <div id="comments-container" style="max-height: 300px; overflow-y: auto;">
-                                            @foreach ($post->comments as $comment)
-                                                <div class="card mb-2">
-                                                    <div class="card-body">
-                                                        <a href="{{ route('profile.show', $comment->user->username) }}"
-                                                            class="d-flex align-items-center">
-                                                            <img id="post-user-profile"
-                                                                src="{{ $comment->user->profile_picture ? asset('storage/profile_pictures/' . $comment->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
-                                                                width="30" height="30"
-                                                                class="rounded-circle me-2 border border-sm">
-                                                            <h5 class="mb-0 d-inline">{{ $comment->user->username }}
-                                                            </h5>
-                                                        </a>
-                                                        <p class="card-text">{{ $comment->content }}</p>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-
-                                        <!-- Add Comment Section -->
-                                        @auth
-                                            <form id="comment-form" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                                <div class="form-group">
-                                                    <label for="content">Add a Comment</label>
-                                                    <textarea id="content" name="content" class="form-control" rows="3" required></textarea>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
-                                            </form>
-                                        @endauth
-                                    </div>
-                                </div>
-                            </div>
-                        </x-modal> --}}
-                    <x-modal name="view-post" maxWidth="lg" centered="true" title="Post details" focusable>
-                        <div class="container">
-                            <div class="row">
-                                <!-- Image Column -->
-                                <div class="col-md-5 bg-light d-none d-md-block" id="image-column">
-                                    <div id="post-image-container" class="mb-3" style="max-height: 500px;">
-                                        <img id="modal-post-image" class="img-fluid w-100 h-100"
+                                <!-- Media Column -->
+                                <div class="col-md-5 bg-light d-none d-md-block" id="media-column">
+                                    <div id="post-media-container" class="mb-3" style="max-height: 500px;">
+                                        <img id="modal-post-image" class="img-fluid w-100 h-100 d-none"
                                             style="object-fit: contain;">
+                                        <video id="modal-post-video" class="img-fluid w-100 h-100 d-none" controls
+                                            style="object-fit: contain;"></video>
                                     </div>
                                 </div>
 
                                 <!-- Content Column -->
-                                <div class="col-md-7">
+                                <div class="col-md-7 d-flex flex-column">
                                     <!-- User Info -->
                                     <div class="mb-3 d-flex align-items-center justify-content-between">
                                         <a id="post-user-link"
@@ -307,52 +220,35 @@
                                     </div>
 
                                     <!-- Post Content -->
-                                    <p id="post-content"></p>
+                                    <p id="post-content" class="flex-grow-1"></p>
 
-                                    <div id="comments-container" style="max-height: 300px; overflow-y: auto;">
-                                    </div>
-
-                                    <!-- Add Comment Section -->
-                                    @auth
-                                        <div class="flex-grow-0 py-3 px-4 border-top">
-                                            <form id="comment-form" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                                <div class="form-group">
-                                                    <label for="message">Message:</label>
-                                                    <div class="input-group">
-                                                        <input type="text" id="content" name="content"
-                                                            class="form-control form-control-lg"
-                                                            placeholder="Comment as {{ $post->user->firstname }} {{ $post->user->lastname }}"
-                                                            required>
-                                                        <button type="submit" class="btn btn-primary btn-lg">
-                                                            <i class="align-middle" data-lucide="send-horizontal"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </form>
+                                    <!-- Comments Section -->
+                                    <div class="mt-auto">
+                                        <div id="comments-container" style="max-height: 300px; overflow-y: auto;">
                                         </div>
-                                        {{-- <form id="comment-form" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                                <div class="form-group">
-                                                    <label for="content">Add a Comment</label>
-                                                    <div class="row">
-                                                        <div class="col">
+
+                                        <!-- Add Comment Section -->
+                                        @auth
+                                            <div class="flex-grow-0 py-3 px-4 border-top">
+                                                <form id="comment-form" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                                    <div class="form-group">
+                                                        <label for="message">Message:</label>
+                                                        <div class="input-group">
                                                             <input type="text" id="content" name="content"
                                                                 class="form-control form-control-lg"
                                                                 placeholder="Comment as {{ $post->user->firstname }} {{ $post->user->lastname }}"
                                                                 required>
-                                                        </div>
-                                                        <div class="col-auto">
                                                             <button type="submit" class="btn btn-primary btn-lg">
                                                                 <i class="align-middle" data-lucide="send-horizontal"></i>
                                                             </button>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </form> --}}
-                                    @endauth
+                                                </form>
+                                            </div>
+                                        @endauth
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -502,19 +398,31 @@
 
                                     </div>
                                     <p>{{ $post->content }}</p>
+
                                     {{-- @include('modals.view-post') --}}
 
-                                    @if ($post->image)
+                                    @if ($post->post_media)
+                                        <!-- Assuming you've renamed the column to 'media' -->
                                         <button type="button" class="decoration-none border-0"
                                             data-bs-toggle="modal" data-bs-target="#view-post"
                                             data-post-id="{{ $post->id }}"
                                             data-post-content="{{ $post->content }}"
-                                            data-post-image="{{ asset('storage/' . $post->image) }}"
+                                            data-post-media="{{ asset('storage/' . $post->post_media) }}"
+                                            data-media-type="{{ pathinfo($post->post_media, PATHINFO_EXTENSION) }}"
                                             data-user-link="{{ route('profile.show', $post->user->username) }}"
                                             data-user-name="{{ $post->user->username }}"
                                             data-user-profile="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}">
-                                            <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid pe-1"
-                                                alt="{{ $post->content }}">
+
+                                            @if (in_array(pathinfo($post->post_media, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
+                                                <img src="{{ asset('storage/' . $post->post_media) }}"
+                                                    class="img-fluid pe-1" alt="{{ $post->content }}">
+                                            @elseif (in_array(pathinfo($post->post_media, PATHINFO_EXTENSION), ['mp4', 'mov', 'avi']))
+                                                <video class="img-fluid pe-1" width="420" height="240" controls>
+                                                    <source src="{{ asset('storage/' . $post->post_media) }}"
+                                                        type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            @endif
                                         </button>
                                     @endif
 
@@ -763,6 +671,7 @@
                     });
                 });
             });
+
             @if (session('success'))
                 Swal.fire({
                     title: 'Success',
@@ -772,32 +681,6 @@
                     showConfirmButton: false
                 })
             @endif
-            // document.querySelectorAll('.btn-edit-post').forEach(button => {
-            //     button.addEventListener('click', function(e) {
-            //         e.preventDefault();
-            //         const postId = this.getAttribute('data-id');
-            //         const editUrl = this.getAttribute('href'); // URL to the edit form
-
-            //         if (!editUrl) {
-            //             return;
-            //         }
-
-            //         Swal.fire({
-            //             title: 'Are you sure?',
-            //             text: "Do you want to edit this post?",
-            //             icon: 'info',
-            //             showCancelButton: true,
-            //             confirmButtonColor: '#3085d6',
-            //             cancelButtonColor: '#d33',
-            //             confirmButtonText: 'Yes, proceed!',
-            //             cancelButtonText: 'Cancel'
-            //         }).then((result) => {
-            //             if (result.isConfirmed) {
-            //                 window.location.href = editUrl; // Redirect to the edit URL
-            //             }
-            //         });
-            //     });
-            // });
 
             const editButtons = document.querySelectorAll('.btn-edit-post');
 
@@ -844,9 +727,73 @@
 
 
 
+            // var modalElement = document.getElementById('view-post');
+            // var commentForm = document.getElementById('comment-form');
+            // var commentsContainer = document.getElementById('comments-container');
+            // var postIdInput = document.querySelector('input[name="post_id"]');
+            // var editPostLink = document.getElementById('edit-post-link');
+            // var deletePostForm = document.getElementById('delete-post-form');
+
+            // modalElement.addEventListener('show.bs.modal', function(event) {
+            //     var button = event.relatedTarget;
+
+            //     var postId = button.getAttribute('data-post-id');
+            //     var postContent = button.getAttribute('data-post-content');
+            //     var postImage = button.getAttribute('data-post-image');
+            //     var userLink = button.getAttribute('data-user-link');
+            //     var userName = button.getAttribute('data-user-name');
+            //     var userProfile = button.getAttribute('data-user-profile');
+
+            //     modalElement.querySelector('#post-content').textContent = postContent;
+            //     modalElement.querySelector('#modal-post-image').src = postImage;
+            //     modalElement.querySelector('#post-user-link').href = userLink;
+            //     modalElement.querySelector('#post-user-name').textContent = userName;
+            //     modalElement.querySelector('#post-user-profile').src = userProfile;
+
+            //     // Handle image display
+            //     var imageColumn = modalElement.querySelector('#post-image-container');
+            //     var modalPostImage = modalElement.querySelector('#modal-post-image');
+            //     if (postImage) {
+            //         modalPostImage.src = postImage;
+            //         modalPostImage.style.display = 'block'; // Ensure image is visible
+            //         imageColumn.style.display = 'block'; // Show image column
+            //     } else {
+            //         modalPostImage.style.display = 'none'; // Hide image if not available
+            //         imageColumn.style.display = 'none'; // Hide image column
+            //     }
+
+            //     // Set up the form actions
+            //     postIdInput.value = postId;
+            //     editPostLink.href = `/posts/${postId}/edit`;
+            //     deletePostForm.action = `/posts/${postId}`;
+
+            //     // Fetch comments
+            //     fetch(`/posts/${postId}/comments`)
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             commentsContainer.innerHTML = '';
+            //             data.comments.forEach(comment => {
+            //                 var commentElement = `
+        //                                         <div class="card mb-2">
+        //                                             <div class="card-body">
+        //                                                 <a href="/profile/${comment.user.username}" class="d-flex align-items-center">
+        //                                                     <img src="${comment.user.profile_picture ? '/storage/' + comment.user.profile_picture : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
+        //                                                     <h5 class="mb-0 d-inline">${comment.user.username}</h5>
+        //                                                 </a>
+        //                                                 <p class="card-text">${comment.content}</p>
+        //                                             </div>
+        //                                         </div>
+        //                                     `;
+            //                 commentsContainer.insertAdjacentHTML('beforeend',
+            //                     commentElement);
+            //             });
+            //         })
+            //         .catch(error => console.error('Error fetching comments:', error));
+            // });
+
             var modalElement = document.getElementById('view-post');
             var commentForm = document.getElementById('comment-form');
-            var commentsContainer = document.getElementById('comments-container');
+            var commentsContainer = document.getElementById('post-comments'); // Updated ID for comments section
             var postIdInput = document.querySelector('input[name="post_id"]');
             var editPostLink = document.getElementById('edit-post-link');
             var deletePostForm = document.getElementById('delete-post-form');
@@ -856,27 +803,44 @@
 
                 var postId = button.getAttribute('data-post-id');
                 var postContent = button.getAttribute('data-post-content');
-                var postImage = button.getAttribute('data-post-image');
+                var postMedia = button.getAttribute('data-post-media');
+                var mediaType = button.getAttribute('data-media-type');
                 var userLink = button.getAttribute('data-user-link');
                 var userName = button.getAttribute('data-user-name');
                 var userProfile = button.getAttribute('data-user-profile');
 
-                modalElement.querySelector('#post-content').textContent = postContent;
-                modalElement.querySelector('#modal-post-image').src = postImage;
+                // Set user info
                 modalElement.querySelector('#post-user-link').href = userLink;
                 modalElement.querySelector('#post-user-name').textContent = userName;
                 modalElement.querySelector('#post-user-profile').src = userProfile;
 
-                // Handle image display
-                var imageColumn = modalElement.querySelector('#post-image-container');
-                var modalPostImage = modalElement.querySelector('#modal-post-image');
-                if (postImage) {
-                    modalPostImage.src = postImage;
-                    modalPostImage.style.display = 'block'; // Ensure image is visible
-                    imageColumn.style.display = 'block'; // Show image column
-                } else {
-                    modalPostImage.style.display = 'none'; // Hide image if not available
-                    imageColumn.style.display = 'none'; // Hide image column
+                // Set post content
+                modalElement.querySelector('#post-content').textContent = postContent;
+
+                // Handle media display
+                var mediaContainer = modalElement.querySelector('#post-media-container');
+                mediaContainer.innerHTML = ''; // Clear previous media
+
+                if (postMedia) {
+                    if (['jpg', 'jpeg', 'png', 'gif'].includes(mediaType)) {
+                        var imgElement = document.createElement('img');
+                        imgElement.src = postMedia;
+                        imgElement.className = 'img-fluid'; // Bootstrap class for responsive images
+                        imgElement.alt = postContent;
+                        mediaContainer.appendChild(imgElement);
+                    } else if (['mp4', 'mov', 'avi'].includes(mediaType)) {
+                        var videoElement = document.createElement('video');
+                        videoElement.className = 'img-fluid';
+                        videoElement.controls = true;
+                        videoElement.style.width = '100%';
+
+                        var sourceElement = document.createElement('source');
+                        sourceElement.src = postMedia;
+                        sourceElement.type = 'video/mp4';
+
+                        videoElement.appendChild(sourceElement);
+                        mediaContainer.appendChild(videoElement);
+                    }
                 }
 
                 // Set up the form actions
@@ -891,22 +855,23 @@
                         commentsContainer.innerHTML = '';
                         data.comments.forEach(comment => {
                             var commentElement = `
-                                                    <div class="card mb-2">
-                                                        <div class="card-body">
-                                                            <a href="/profile/${comment.user.username}" class="d-flex align-items-center">
-                                                                <img src="${comment.user.profile_picture ? '/storage/' + comment.user.profile_picture : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
-                                                                <h5 class="mb-0 d-inline">${comment.user.username}</h5>
-                                                            </a>
-                                                            <p class="card-text">${comment.content}</p>
-                                                        </div>
-                                                    </div>
-                                                `;
-                            commentsContainer.insertAdjacentHTML('beforeend',
-                                commentElement);
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <a href="/profile/${comment.user.username}" class="d-flex align-items-center">
+                                <img src="${comment.user.profile_picture ? '/storage/' + comment.user.profile_picture : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
+                                <h5 class="mb-0 d-inline">${comment.user.username}</h5>
+                            </a>
+                            <p class="card-text">${comment.content}</p>
+                        </div>
+                    </div>
+                `;
+                            commentsContainer.insertAdjacentHTML('beforeend', commentElement);
                         });
                     })
                     .catch(error => console.error('Error fetching comments:', error));
             });
+
+
 
 
             // Handle comment form submission
