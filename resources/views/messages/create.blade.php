@@ -91,12 +91,13 @@
                         <div class="py-2 px-4 border-bottom d-none d-lg-block">
                             <div class="d-flex align-items-start align-items-center py-1">
                                 <div class="position-relative">
-                                    <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
-                                        class="rounded-circle me-1" alt="{{ $user->username }}" width="40"
+                                    <img src="{{ $receiver->profile_picture ? asset('storage/' . $receiver->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
+                                        class="rounded-circle me-1" alt="{{ $receiver->username }}" width="40"
                                         height="40">
                                 </div>
                                 <div class="flex-grow-1 ps-3">
                                     <strong>{{ $receiver->firstname }} {{ $receiver->lastname }}</strong>
+                                    <p>{{ $receiver->username }}</p>
                                     {{-- <div class="text-muted small"><em>Typing...</em></div> --}}
                                 </div>
                                 <div>
@@ -145,8 +146,8 @@
                                 <div class="form-group">
                                     <label for="message">Message:</label>
                                     <div class="input-group">
-                                        <input type="text" name="message" id="message"
-                                            class="form-control form-control-lg" required>
+                                        <textarea type="text" name="message" id="message"
+                                            class="form-control form-control-lg" style="resize: none;" required></textarea>
                                         <button type="submit" class="btn btn-primary"><i
                                                 data-lucide="send-horizontal"></i></button>
                                     </div>

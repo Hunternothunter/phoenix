@@ -64,6 +64,7 @@
     </style>
 
     <div class="container-fluid">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         {{-- <div class="container p-0"> --}}
         <div class="row">
             <div class="col-12 col-md-3 left-column  d-none d-md-block">
@@ -236,10 +237,10 @@
                                                     <div class="form-group">
                                                         <label for="message">Message:</label>
                                                         <div class="input-group">
-                                                            <input type="text" id="content" name="content"
-                                                                class="form-control form-control-lg"
+                                                            <textarea id="content" name="content"
+                                                                class="form-control form-control-lg" style="resize: none;"
                                                                 placeholder="Comment as {{ $post->user->firstname }} {{ $post->user->lastname }}"
-                                                                required>
+                                                                required></textarea>
                                                             <button type="submit" class="btn btn-primary btn-lg">
                                                                 <i class="align-middle" data-lucide="send-horizontal"></i>
                                                             </button>
@@ -279,7 +280,7 @@
                                         {{-- <img id="edit-post-image" class="img-fluid w-100 h-100" style="object-fit: contain;"> --}}
                                         <img id="edit-post-image" class="img-fluid w-100 h-100"
                                             style="object-fit: contain;"
-                                            src="{{ asset('storage/' . $post->image) }}">
+                                            src="{{ asset('storage/' . $post->post_media) }}">
 
                                     </div>
 
@@ -502,7 +503,41 @@
 
             <!-- Profile Section -->
             <div class="col-12 col-md-3 right-column  d-none d-md-block">
+
                 <div class="card mb-3">
+                    <h5 class="m-3 text-start">Recommended Users</h5>
+                    @if ($recommendedUsers && $recommendedUsers->isNotEmpty())
+                        @foreach ($recommendedUsers as $user)
+                            <div class="card-body text-center">
+                                <img src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
+                                    width="128" height="128"
+                                    class="rounded-circle border border-light shadow-sm"
+                                    alt="{{ $user->firstname }}">
+                                <h4 class="card-title mb-0">{{ $user->firstname . ' ' . $user->lastname }}</h4>
+                                <div class="text-muted mb-2">{{ $user->email }}</div>
+                                <div class="d-flex flex-row justify-content-center gap-2">
+                                    <form id="follow-form" action="{{ route('users.followToggle', $user->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary btn-sm" id="follow-button">
+                                            {{ Auth::user()->isFollowing($user->id) ? 'Following' : 'Follow' }}
+                                        </button>
+                                    </form>
+                                    <a class="btn btn-primary btn-sm"
+                                        href="{{ route('messages.create', $user->id) }}">
+                                        <span data-lucide="message-square"></span> Message
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="hr-2"></div>
+                        @endforeach
+                    @else
+                        <p>No recommended users at this time.</p>
+                    @endif
+                </div>
+
+
+                {{-- <div class="card mb-3">
                     <div class="card-body text-center">
                         <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                             width="128" height="128" class="rounded-circle border border-light shadow-sm"
@@ -516,7 +551,7 @@
                                     data-lucide="message-square"></span> Message</a>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Following Section -->
                 <div class="card mb-3">
@@ -536,7 +571,7 @@
                         <h5 class="card-title mb-0">Following</h5>
                     </div>
                     <div class="card-body">
-                        @foreach ($user->following as $followedUser)
+                        {{-- @foreach ($user->following as $followedUser)
                             <div class="d-flex align-items-start">
                                 <img src="{{ $followedUser->profile_picture ? asset('storage/' . $followedUser->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                     width="30" height="30" class="rounded-circle me-2"
@@ -550,7 +585,7 @@
                                 </div>
                             </div>
                             <hr class="my-2" />
-                        @endforeach
+                        @endforeach --}}
                     </div>
                 </div>
 
@@ -637,7 +672,8 @@
 
                     document.getElementById('comments-container').insertAdjacentHTML('afterbegin', commentCard);
 
-                    document.querySelector('#comment-form input').textContent = '';
+                    document.querySelector('#comment-form textarea').value = '';
+                    // document.getElementById('content').textContent = '';
 
                 })
                 .catch(function(error) {
@@ -724,72 +760,6 @@
                         .catch(error => console.error('Error fetching post:', error));
                 });
             });
-
-
-
-            // var modalElement = document.getElementById('view-post');
-            // var commentForm = document.getElementById('comment-form');
-            // var commentsContainer = document.getElementById('comments-container');
-            // var postIdInput = document.querySelector('input[name="post_id"]');
-            // var editPostLink = document.getElementById('edit-post-link');
-            // var deletePostForm = document.getElementById('delete-post-form');
-
-            // modalElement.addEventListener('show.bs.modal', function(event) {
-            //     var button = event.relatedTarget;
-
-            //     var postId = button.getAttribute('data-post-id');
-            //     var postContent = button.getAttribute('data-post-content');
-            //     var postImage = button.getAttribute('data-post-image');
-            //     var userLink = button.getAttribute('data-user-link');
-            //     var userName = button.getAttribute('data-user-name');
-            //     var userProfile = button.getAttribute('data-user-profile');
-
-            //     modalElement.querySelector('#post-content').textContent = postContent;
-            //     modalElement.querySelector('#modal-post-image').src = postImage;
-            //     modalElement.querySelector('#post-user-link').href = userLink;
-            //     modalElement.querySelector('#post-user-name').textContent = userName;
-            //     modalElement.querySelector('#post-user-profile').src = userProfile;
-
-            //     // Handle image display
-            //     var imageColumn = modalElement.querySelector('#post-image-container');
-            //     var modalPostImage = modalElement.querySelector('#modal-post-image');
-            //     if (postImage) {
-            //         modalPostImage.src = postImage;
-            //         modalPostImage.style.display = 'block'; // Ensure image is visible
-            //         imageColumn.style.display = 'block'; // Show image column
-            //     } else {
-            //         modalPostImage.style.display = 'none'; // Hide image if not available
-            //         imageColumn.style.display = 'none'; // Hide image column
-            //     }
-
-            //     // Set up the form actions
-            //     postIdInput.value = postId;
-            //     editPostLink.href = `/posts/${postId}/edit`;
-            //     deletePostForm.action = `/posts/${postId}`;
-
-            //     // Fetch comments
-            //     fetch(`/posts/${postId}/comments`)
-            //         .then(response => response.json())
-            //         .then(data => {
-            //             commentsContainer.innerHTML = '';
-            //             data.comments.forEach(comment => {
-            //                 var commentElement = `
-        //                                         <div class="card mb-2">
-        //                                             <div class="card-body">
-        //                                                 <a href="/profile/${comment.user.username}" class="d-flex align-items-center">
-        //                                                     <img src="${comment.user.profile_picture ? '/storage/' + comment.user.profile_picture : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
-        //                                                     <h5 class="mb-0 d-inline">${comment.user.username}</h5>
-        //                                                 </a>
-        //                                                 <p class="card-text">${comment.content}</p>
-        //                                             </div>
-        //                                         </div>
-        //                                     `;
-            //                 commentsContainer.insertAdjacentHTML('beforeend',
-            //                     commentElement);
-            //             });
-            //         })
-            //         .catch(error => console.error('Error fetching comments:', error));
-            // });
 
             var modalElement = document.getElementById('view-post');
             var commentForm = document.getElementById('comment-form');

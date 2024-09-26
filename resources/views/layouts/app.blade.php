@@ -82,10 +82,48 @@
     .iconBtn:hover {
         background-color: #eeeeee;
     }
+
+    /* #loading {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .spinner {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #3498db;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    } */
 </style>
 
 <body>
     <div class="wrapper">
+
+        {{-- <!-- Loading Spinner -->
+        <div id="loading" style="display:none;">
+            <div class="spinner"></div>
+        </div> --}}
+
         @if (Auth::user())
             {{-- <nav id="sidebar" class="sidebar">
                 <div class="sidebar-content js-simplebar">
@@ -164,39 +202,14 @@
                 </div>
             </nav> --}}
         @endif
+
         <div class="main">
-            <nav class="navbar navbar-expand-lg navbar-bg" style="padding: 0.5rem 1rem; height:4rem;">
+            <nav class="navbar navbar-expand-lg navbar-bg" style="padding: 0.5rem 1rem; height:4rem; position:fixed; top: 0; width: 100%; z-index: 1000;">
                 @auth
                     <div class="container-fluid">
                         <a href="/" class="btn btn-lg me-2 rounded-circle">
                             <i class="fa-solid fa-heading icon-large"></i>
                         </a>
-
-                        {{-- <div class="d-flex justify-content-center flex-grow-1 align-items-center gap-4 mx-3">
-                            <a href="{{ route('home') }}"
-                                class="btn btn-transparent btn-lg position-relative nav-btn {{ request()->routeIs('home') ? 'active' : '' }}">
-                                <i class="fas fa-home fa-xl"></i>
-                                <span
-                                    class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('home') ? '' : 'd-none' }}"
-                                    style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
-                            </a>
-
-                            <a href="{{ route('watch.show', Auth::user()->id) }}"
-                                class="btn btn-transparent btn-lg position-relative nav-btn">
-                                <i class="fas fa-tv fa-xl"></i>
-                                <span
-                                    class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('watch.show') ? '' : 'd-none' }}"
-                                    style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
-                            </a>
-
-                            <a href="{{ route('profile.show', Auth::user()->username) }}"
-                                class="btn btn-transparent btn-lg position-relative nav-btn {{ request()->routeIs('profile.show', Auth::user()->username) ? 'active' : '' }}">
-                                <i class="fas fa-user fa-xl"></i>
-                                <span
-                                    class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('profile.show', Auth::user()->username) ? '' : 'd-none' }}"
-                                    style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
-                            </a>
-                        </div> --}}
 
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -224,10 +237,10 @@
                                         style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
                                 </a>
 
-                                <a href="{{ route('watch.show', Auth::user()->id) }}"
+                                <a href="{{ route('watch.index') }}"
                                     class="btn btn-lg position-relative nav-btn">
                                     <i
-                                        class="fas fa-tv fa-xl {{ request()->routeIs('watch.show') ? 'text-primary' : 'text-dark' }}"></i>
+                                        class="fas fa-tv fa-xl {{ request()->routeIs('watch.index') ? 'text-primary' : 'text-dark' }}"></i>
                                     <span
                                         class="position-absolute bottom-0 start-50 translate-middle-x w-100 {{ request()->routeIs('watch.show') ? '' : 'd-none' }}"
                                         style="border-bottom: 3px solid rgb(16,103,252);" aria-hidden="true"></span>
@@ -452,7 +465,7 @@
                 @endauth
             </nav>
 
-            <main class="content">
+            <main class="content" style="margin-top:3rem;">
                 {{ $slot }}
             </main>
 
@@ -494,6 +507,15 @@
     @stack('scripts')
 
     <script>
+        // document.addEventListener("DOMContentLoaded", function() {
+        //     const loading = document.getElementById('loading');
+        //     loading.style.display = 'flex';
+
+        //     window.onload = function() {
+        //         loading.style.display = 'none';
+        //     };
+        // });
+
         function markAsRead(userId) {
             fetch(`/messages/mark-read/${userId}`, {
                 method: 'POST',
@@ -507,7 +529,7 @@
                 }
             });
         }
-        
+
         document.addEventListener('keydown', function(e) {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
                 e.preventDefault();

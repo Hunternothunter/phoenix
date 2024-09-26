@@ -36,8 +36,8 @@
             <div class="col">
                 <!-- Textarea for Content Input -->
                 <div class="mb-3">
-                    <input id="content" name="content" class="form-control custom-textarea" rows="3"
-                        placeholder="What's on your mind, {{ Auth::user()->firstname }} ?" autofocus></input>
+                    <textarea id="content" name="content" class="form-control custom-textarea" rows="3"
+                        placeholder="What's on your mind, {{ Auth::user()->firstname }} ?" autofocus></textarea>
                 </div>
 
                 <hr class="my-2">

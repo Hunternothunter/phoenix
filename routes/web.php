@@ -67,6 +67,7 @@
 
 // require __DIR__ . '/auth.php';
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
@@ -75,18 +76,35 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\WatchController;
+use App\Models\Follower;
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
+use App\Services\UserService;
 
 // Home route
 Route::get('/', function () {
     if (Auth::check()) {
         $user = Auth::user();
+        $posts = Post::all();
+
+        // Get IDs of users that the current user is following
+        // $followingUserIds = $user->followedUsers()->pluck('user_id'); // Get IDs of users being followed
+        $followingUserIds = Follower::where('follower_id', $user->id)->pluck('user_id');
         $posts = Post::with('user')->latest()->get();
-        $following = $user->following;
+
+        // Fetch posts only from users that the current user is following
+        // $posts = Post::where('user_id', $followingUserIds)->orWhere('user_id', $user->id)->with('user')->latest()->get();
         $activities = [];
-        return view('dashboard', compact('posts', 'user', 'following', 'activities'));
+
+        $userService = new UserService(); // Create an instance of UserService
+        $allUsers = User::all(); // You may want to filter based on your logic
+        $recommendedUserIds = $userService->recommendUsers($user, $allUsers);
+
+        $recommendedUsers = User::whereIn('id', $recommendedUserIds)->get();
+
+        return view('dashboard', compact('posts', 'user', 'activities', 'recommendedUsers'));
     } else {
         return view('auth.login');
     }
@@ -99,7 +117,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified']);
 
 // Profile routes
-Route::get('/{username}/f', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/u/{username}', [ProfileController::class, 'show'])->name('profile.show');
 // Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
 // Route::get('/profile/{id}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 // Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
@@ -141,7 +159,7 @@ Route::middleware('auth')->group(function () {
 
 // Watch routes
 Route::prefix('watch')->group(function () {
-    Route::get('index', [WatchController::class, 'index'])->name('watch.index');
+    Route::get('/', [WatchController::class, 'index'])->name('watch.index');
     Route::post('{id}/show', [WatchController::class, 'show'])->name('watch.show');
 });
 

@@ -38,7 +38,7 @@
                         <h5 class="card-title mb-0">Profile Details</h5>
                         @include('modals.update-profile')
 
-                        @if ((Auth::check() && Auth::user()->id === $user->id) && Auth::user())
+                        @if (Auth::check() && Auth::user()->id === $user->id && Auth::user())
                             <a class="nav-link d-flex align-items-center" data-bs-toggle="dropdown">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20"
                                     height="20">
@@ -79,7 +79,8 @@
                                         method="POST">
                                         @csrf
                                         <button type="submit" class="btn btn-primary btn-lg" id="follow-button">
-                                            {{ Auth::user()->isFollowing($user->id) ? 'Following' : 'Follow' }}
+                                            {{-- {{ Auth::user()->isFollowing($user->id) ? 'Following' : 'Follow' }} --}}
+                                            @if ($user->isFollowing(Auth::id())) Following @else Follow @endif
                                         </button>
                                     </form>
                                     <a class="btn btn-light btn-lg" href="{{ route('messages.create', $user->id) }}">
@@ -299,31 +300,31 @@
                 });
             @endif
 
-            document.getElementById('follow-form').addEventListener('submit', function(event) {
-                event.preventDefault();
-                let form = this;
-                let button = document.getElementById('follow-button');
+            // document.getElementById('follow-form').addEventListener('submit', function(event) {
+            //     event.preventDefault();
+            //     let form = this;
+            //     let button = document.getElementById('follow-button');
 
-                fetch(form.action, {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content'),
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({}),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'followed') {
-                            button.textContent = 'Following';
-                        } else if (data.status === 'unfollowed') {
-                            button.textContent = 'Follow';
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
+            //     fetch(form.action, {
+            //             method: 'POST',
+            //             headers: {
+            //                 'X-Requested-With': 'XMLHttpRequest',
+            //                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+            //                     .getAttribute('content'),
+            //                 'Content-Type': 'application/json'
+            //             },
+            //             body: JSON.stringify({}),
+            //         })
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             if (data.status === 'followed') {
+            //                 button.textContent = 'Following';
+            //             } else if (data.status === 'unfollowed') {
+            //                 button.textContent = 'Follow';
+            //             }
+            //         })
+            //         .catch(error => console.error('Error:', error))
+            // });
         });
     </script>
 </x-app-layout>

@@ -70,17 +70,40 @@ class FollowerController extends Controller
 
         $follower = Follower::where('user_id', $userId)->where('follower_id', Auth::id())->first();
 
-        if ($follower) {
-            // If already following, unfollow
-            $follower->delete();
-            return response()->json(['status' => 'unfollowed']);
+        // if ($follower) {
+        //     // If already following, unfollow
+        //     $follower->delete();
+        //     return response()->json(['status' => 'unfollowed']);
+        // } else {
+        //     // If not following, follow
+        //     $follower = new Follower();
+        //     $follower->user_id = $userId;
+        //     $follower->follower_id = Auth::id();
+        //     $follower->save();
+        //     return response()->json(['status' => 'followed']);
+        // }
+        if ($request->ajax()) {
+            if ($follower) {
+                $follower->delete();
+                return response()->json(['status' => 'unfollowed']);
+            } else {
+                $follower = new Follower();
+                $follower->user_id = $userId;
+                $follower->follower_id = Auth::id();
+                $follower->save();
+                return response()->json(['status' => 'followed']);
+            }
         } else {
-            // If not following, follow
-            $follower = new Follower();
-            $follower->user_id = $userId;
-            $follower->follower_id = Auth::id();
-            $follower->save();
-            return response()->json(['status' => 'followed']);
+            // Handle non-AJAX request (e.g., form submission)
+            if ($follower) {
+                $follower->delete();
+            } else {
+                $follower = new Follower();
+                $follower->user_id = $userId;
+                $follower->follower_id = Auth::id();
+                $follower->save();
+            }
+            return redirect()->back(); // Redirect for non-AJAX requests
         }
     }
 }

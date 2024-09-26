@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -11,9 +12,36 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Services\UserService;
 
 class RegisteredUserController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    public function dashboard()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $user = Auth::user();
+        $posts = Post::with('user')->latest()->get();
+        $following = $user->following;
+        $activities = [];
+
+        $allUsers = User::all(); // You may want to filter based on your logic
+        $recommendedUserIds = $this->userService->recommendUsers($user, $allUsers);
+        $recommendedUsers = User::whereIn('id', $recommendedUserIds)->get();
+
+        return view('dashboard', compact('posts', 'user', 'following', 'activities', 'recommendedUsers'));
+    }
+
+
     /**
      * Display the registration view.
      */
