@@ -163,6 +163,9 @@ Route::prefix('watch')->group(function () {
     Route::post('{id}/show', [WatchController::class, 'show'])->name('watch.show');
 });
 
+Route::get('/photo/{photo_id}', [PostController::class, 'show_images'])->name('posts.show_images');
+Route::get('/video/{photo_id}', [PostController::class, 'show_videos'])->name('posts.show_videos');
+
 // OTP verification routes
 Route::post('/send-otp', [VerificationController::class, 'sendOtp'])->name('send.otp');
 Route::post('/verify-otp', [VerificationController::class, 'verifyOtp'])->name('verify.otp');

@@ -18,7 +18,7 @@ class PostController extends Controller
 
         $posts = Post::with('user')->latest()->get();
         $user = Auth::user(); // Assuming you want to show the currently authenticated user
-        return view('posts.index', compact('posts', 'user', 'activities'));
+        return view('posts.index', compact('posts', 'user'));
     }
 
     // Show a specific post
@@ -26,21 +26,23 @@ class PostController extends Controller
     {
         $post = Post::with(['comments.user'])->findOrFail($id);
 
-        return response()->json([
-            'image' => $post->image ? asset('storage/' . $post->image) : null,
-            'userLink' => route('profile.show', $post->user->username),
-            'userProfile' => $post->user->profile_picture ? asset('storage/profile_pictures/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png'),
-            'userName' => $post->user->username,
-            'content' => $post->content,
-            'comments' => $post->comments->map(function ($comment) {
-                return [
-                    'userLink' => route('profile.show', $comment->user->username),
-                    'userProfile' => $comment->user->profile_picture ? asset('storage/profile_pictures/' . $comment->user->profile_picture) : asset('storage/profile_pictures/default-user.png'),
-                    'userName' => $comment->user->username,
-                    'content' => $comment->content,
-                ];
-            }),
-        ]);
+        // return response()->json([
+        //     'id' => $post->id,
+        //     'post_media' => $post->post_media ? asset('storage/' . $post->post_media) : null,
+        //     'userLink' => route('profile.show', $post->user->username),
+        //     'userProfile' => $post->user->profile_picture ? asset('storage/profile_pictures/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png'),
+        //     'userName' => $post->user->username,
+        //     'content' => $post->content,
+        //     'comments' => $post->comments->map(function ($comment) {
+        //         return [
+        //             'userLink' => route('profile.show', $comment->user->username),
+        //             'userProfile' => $comment->user->profile_picture ? asset('storage/profile_pictures/' . $comment->user->profile_picture) : asset('storage/profile_pictures/default-user.png'),
+        //             'userName' => $comment->user->username,
+        //             'content' => $comment->content,
+        //         ];
+        //     }),
+        // ]);
+        return view('posts.show', compact('post'));
     }
 
 
@@ -131,5 +133,18 @@ class PostController extends Controller
                 ];
             }),
         ]);
+    }
+
+    public function show_videos($id)
+    {
+        $post = Post::with(['comments.user'])->findOrFail($id);
+
+        return view('posts.show', compact('post'));
+    }
+    public function show_images($id)
+    {
+        $post = Post::with(['comments.user'])->findOrFail($id);
+
+        return view('posts.show', compact('post'));
     }
 }

@@ -237,10 +237,8 @@
                                                     <div class="form-group">
                                                         <label for="message">Message:</label>
                                                         <div class="input-group">
-                                                            <textarea id="content" name="content"
-                                                                class="form-control form-control-lg" style="resize: none;"
-                                                                placeholder="Comment as {{ $post->user->firstname }} {{ $post->user->lastname }}"
-                                                                required></textarea>
+                                                            <textarea id="content" name="content" class="form-control form-control-lg" style="resize: none;"
+                                                                placeholder="Comment as {{ $post->user->firstname }} {{ $post->user->lastname }}" required></textarea>
                                                             <button type="submit" class="btn btn-primary btn-lg">
                                                                 <i class="align-middle" data-lucide="send-horizontal"></i>
                                                             </button>
@@ -404,27 +402,22 @@
 
                                     @if ($post->post_media)
                                         <!-- Assuming you've renamed the column to 'media' -->
-                                        <button type="button" class="decoration-none border-0"
-                                            data-bs-toggle="modal" data-bs-target="#view-post"
-                                            data-post-id="{{ $post->id }}"
-                                            data-post-content="{{ $post->content }}"
-                                            data-post-media="{{ asset('storage/' . $post->post_media) }}"
-                                            data-media-type="{{ pathinfo($post->post_media, PATHINFO_EXTENSION) }}"
-                                            data-user-link="{{ route('profile.show', $post->user->username) }}"
-                                            data-user-name="{{ $post->user->username }}"
-                                            data-user-profile="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}">
 
-                                            @if (in_array(pathinfo($post->post_media, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
+                                        @if (in_array(pathinfo($post->post_media, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
+                                            <a href="{{ route('posts.show_images', $post->id) }}" type="button"
+                                                class="decoration-none border-0">
                                                 <img src="{{ asset('storage/' . $post->post_media) }}"
                                                     class="img-fluid pe-1" alt="{{ $post->content }}">
-                                            @elseif (in_array(pathinfo($post->post_media, PATHINFO_EXTENSION), ['mp4', 'mov', 'avi']))
+                                            </a>
+                                        @elseif (in_array(pathinfo($post->post_media, PATHINFO_EXTENSION), ['mp4', 'mov', 'avi']))
+                                            <a href="{{ route('posts.show_videos', $post->id) }}" type="button" class="decoration-none border-0">
                                                 <video class="img-fluid pe-1" width="420" height="240" controls>
                                                     <source src="{{ asset('storage/' . $post->post_media) }}"
                                                         type="video/mp4">
                                                     Your browser does not support the video tag.
                                                 </video>
-                                            @endif
-                                        </button>
+                                            </a>
+                                        @endif
                                     @endif
 
                                     {{-- @if ($post->image)
@@ -465,7 +458,23 @@
                                         @php
                                             $commentCount = $post->comments()->count();
                                         @endphp
+
                                         <button type="button" class="btn mt-1" data-bs-toggle="modal"
+                                            data-bs-target="#view-post" data-post-id="{{ $post->id }}"
+                                            data-post-content="{{ $post->content }}"
+                                            data-post-media="{{ asset('storage/' . $post->post_media) }}"
+                                            data-media-type="{{ pathinfo($post->post_media, PATHINFO_EXTENSION) }}"
+                                            data-user-link="{{ route('profile.show', $post->user->username) }}"
+                                            data-user-name="{{ $post->user->username }}"
+                                            data-user-profile="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}">
+
+                                            <i class="align-middle" data-lucide="message-circle"></i>
+                                            @if ($commentCount > 0)
+                                                {{ $commentCount }}
+                                            @endif
+                                        </button>
+
+                                        {{-- <button type="button" class="btn mt-1" data-bs-toggle="modal"
                                             data-bs-target="#view-post" data-post-id="{{ $post->id }}"
                                             data-post-content="{{ $post->content }}"
                                             data-post-image="{{ asset('storage/' . $post->image) }}"
@@ -476,7 +485,7 @@
                                             @if ($commentCount > 0)
                                                 {{ $commentCount }}
                                             @endif
-                                        </button>
+                                        </button> --}}
 
                                         <!-- Share Button -->
                                         <form action="{{ route('likes.store', $post->id) }}" method="POST">
