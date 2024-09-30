@@ -625,7 +625,7 @@
                                     <div class="card-body p-3 p-sm-4">
                                         <div class="border-translucent mb-3">
                                             <div class="d-flex align-items-center mb-3">
-                                                <a href="../../apps/social/profile.html">
+                                                <a href="{{ route('profile.show', $post->user->username) }}">
                                                     <div class="avatar avatar-xl  me-2">
                                                         <img class="rounded-circle "
                                                             src="{{ asset('storage/' . $post->user->profile_picture) }}"
@@ -668,7 +668,7 @@
                                             <p class="text-body-secondary">{{ $post->content }}</p>
                                             <div class="row g-1 mb-5">
                                                 <div class="col-3">
-                                                    <a href="#!" data-gallery="gallery-posts-0">
+                                                    <a href="{{ route('posts.show_images', $post->id) }}" data-gallery="gallery-posts-0">
                                                         <img class="rounded h-100 w-100"
                                                             src="{{ asset('storage/' . $post->post_media) }}"
                                                             alt="..." />
@@ -794,21 +794,32 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="navbar-bottom d-lg-none">
-            <div class="nav"><a class="nav-link active" aria-current="page"
-                    href="../../apps/social/feed.html"><span class="fa-solid fa-home nav-icon"></span><span
-                        class="nav-label">Home</span></a><a class="nav-link"
-                    href="../../apps/social/profile.html"><span class="fa-solid fa-user nav-icon"></span><span
-                        class="nav-label">Profile</span></a><a class="nav-link" href="#!"><span
-                        class="fa-solid fa-image nav-icon"></span><span class="nav-label">Photos</span></a><a
-                    class="nav-link" href="../../apps/chat.html"><span
-                        class="fa-solid fa-message nav-icon"></span><span class="nav-label">Messages</span></a><a
-                    class="nav-link" href="../../apps/events/event-detail.html"><span
-                        class="fa-solid fa-calendar-days nav-icon"></span><span class="nav-label">Events</span></a>
+        <div class="navbar-bottom d-lg-none">
+            <div class="nav">
+                <a class="nav-link active" aria-current="page" href="{{ route('home') }}">
+                    <span class="fa-solid fa-home nav-icon"></span>
+                    <span class="nav-label">Home</span>
+                </a>
+                <a class="nav-link" href="{{ route('profile.show', Auth::user()->username) }}">
+                    <span class="fa-solid fa-user nav-icon"></span>
+                    <span class="nav-label">Profile</span>
+                </a>
+                <a class="nav-link" href="#!">
+                    <span class="fa-solid fa-image nav-icon"></span>
+                    <span class="nav-label">Photos</span>
+                </a>
+                <a class="nav-link" href="#!">
+                    <span class="fa-solid fa-message nav-icon"></span>
+                    <span class="nav-label">Messages</span>
+                </a>
+                <a class="nav-link" href="#!">
+                    <span class="fa-solid fa-calendar-days nav-icon"></span>
+                    <span class="nav-label">Events</span>
+                </a>
             </div>
-        </div> --}}
+        </div>
     </div>
-    {{-- <div class="modal fade" id="searchBoxModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="true"
+    <div class="modal fade" id="searchBoxModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="true"
         data-phoenix-modal="data-phoenix-modal" style="--phoenix-backdrop-opacity: 1;">
         <div class="modal-dialog">
             <div class="modal-content mt-15 rounded-pill">
@@ -992,7 +1003,7 @@
             </div>
         </div>
     </div>
-    <div class="support-chat-container support-chat-bottom-lg">
+    {{-- <div class="support-chat-container support-chat-bottom-lg">
         <div class="container-fluid support-chat">
             <div class="card bg-body-emphasis">
                 <div class="card-header d-flex flex-between-center px-4 py-3 border-translucent">
