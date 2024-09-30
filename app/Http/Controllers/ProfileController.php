@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Comment;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,9 +46,15 @@ class ProfileController extends Controller
             // ->orWhere('firstname', $identifier)
             // ->orWhere('email', $identifier)
             ->firstOrFail();
+        $posts = Post::where('user_id', $user->id)->get();
+
+        $comments = Comment::whereIn('post_id', $posts->pluck('id'))->get();
+
 
         return view('profile.show', [
             'user' => $user,
+            'posts' => $posts,
+            'comments' => $comments,
         ]);
     }
 
@@ -56,7 +64,7 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-        
+
         $firstname = ucwords(strtolower($request->firstname));
         $middlename = $request->middlename ? ucwords(strtolower($request->middlename)) : null;
         $lastname = ucwords(strtolower($request->lastname));

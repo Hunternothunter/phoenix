@@ -116,7 +116,8 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
-        return redirect()->route('home')->with('success', 'Post deleted successfully.');
+        return redirect()->back();
+        // return redirect()->route('home')->with('success', 'Post deleted successfully.');
     }
 
     public function getComments(Post $post)

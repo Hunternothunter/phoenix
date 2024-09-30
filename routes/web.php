@@ -76,6 +76,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\WatchController;
+use App\Models\Comment;
 use App\Models\Follower;
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
@@ -88,6 +89,7 @@ Route::get('/', function () {
     if (Auth::check()) {
         $user = Auth::user();
         $posts = Post::all();
+        $comments = Comment::all();
 
         // Get IDs of users that the current user is following
         // $followingUserIds = $user->followedUsers()->pluck('user_id'); // Get IDs of users being followed
@@ -104,7 +106,7 @@ Route::get('/', function () {
 
         $recommendedUsers = User::whereIn('id', $recommendedUserIds)->get();
 
-        return view('dashboard', compact('posts', 'user', 'activities', 'recommendedUsers'));
+        return view('dashboard', compact('posts', 'user', 'activities', 'recommendedUsers', 'comments'));
     } else {
         return view('auth.login');
     }
@@ -152,7 +154,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('messages', MessageController::class)->only(['index', 'create', 'store', 'show']);
     Route::get('messages/e2ee/t/{user}/i', [MessageController::class, 'index'])->name('messages.index');
     Route::get('messages/e2ee/t/{user}', [MessageController::class, 'create'])->name('messages.create');
-    Route::get('messages/{user}', [MessageController::class, 'showConversation'])->name('messages.showConversation');
+    Route::get('messages/e2ee/{user}', [MessageController::class, 'showConversation'])->name('messages.showConversation');
     // Route::post('messages/{message}/mark-as-read', [MessageController::class, 'markAsRead'])->name('messages.markAsRead');
     Route::post('/messages/mark-read/{userId}', [MessageController::class, 'markMessagesAsRead'])->name('messages.markRead');
 });

@@ -1,6 +1,6 @@
 <x-app-layout>
     <style>
-        html,
+        /* html,
         body {
             height: 100%;
             margin: 0;
@@ -60,12 +60,11 @@
 
         .scrollable-content {
             height: 100%;
-        }
+        } */
     </style>
 
-    <div class="container-fluid">
+    {{-- <div class="container-fluid">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        {{-- <div class="container p-0"> --}}
         <div class="row">
             <div class="col-12 col-md-3 left-column  d-none d-md-block">
                 <div class="card mb-3 bg-transparent border-0 shadow-none">
@@ -157,7 +156,6 @@
                                             style="background-color: transparent; border: 1px solid transparent;"
                                             onmouseover="this.style.backgroundColor='#EBEBEB'; this.style.borderColor='#EBEBEB';"
                                             onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='transparent';">
-                                            {{-- <i class="align-middle me-2" data-lucide="video"></i> --}}
                                             <i class="fas fa-video me-2 icon-large text-danger"></i>
                                             <span class="align-middle fw-bold">Live video</span>
                                         </button>
@@ -167,7 +165,6 @@
                                             style="background-color: transparent; border: 1px solid transparent;"
                                             onmouseover="this.style.backgroundColor='#EBEBEB'; this.style.borderColor='#EBEBEB';"
                                             onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='transparent';">
-                                            {{-- <i class="align-middle me-2" data-lucide="images"></i> --}}
                                             <i class="fa-solid fa-images me-2 icon-large text-primary"></i>
                                             <span class="align-middle fw-bold">Photo/Video</span>
                                         </button>
@@ -275,7 +272,6 @@
 
                                     <div id="post-image-container" class="mb-3"
                                         style="max-height: 400px; display: none;">
-                                        {{-- <img id="edit-post-image" class="img-fluid w-100 h-100" style="object-fit: contain;"> --}}
                                         <img id="edit-post-image" class="img-fluid w-100 h-100"
                                             style="object-fit: contain;"
                                             src="{{ asset('storage/' . $post->post_media) }}">
@@ -332,33 +328,13 @@
                                                     {{ customTimeDiff($post->created_at) }}
                                                 </span>
                                             </div>
-                                            {{-- <div class='d-flex inline-flex align-item-center justify-content-center gap-2'>
-                                                    <form id='follow-form'
-                                                        action='{{ route('users.followToggle', $user->id) }}'
-                                                        method='POST'>
-                                                        @csrf
-                                                        <button type='submit' class='btn btn-primary btn-sm'
-                                                            id='follow-button'>
-                                                            {{ Auth::user()->isFollowing($user->id) ? 'Following' : 'Follow' }}
-                                                        </button>
-                                                    </form>
-                                                    <a class='btn btn-primary btn-sm'
-                                                        href='{{ route('messages.create', $user->id) }}'>
-                                                        <span data-lucide='message-square'></span> Message
-                                                    </a>
-                                                </div> --}}
+
                                         </a>
                                         <a class="nav-link d-none d-sm-inline-block cursor-pointer"
                                             data-bs-toggle="dropdown" data-lucide="ellipsis-vertical">
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             @if (Auth::id() === $post->user_id)
-                                                {{-- <a class='dropdown-item btn-edit-post'
-                                                        href="{{ route('posts.edit', $post->id) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#edit-post">
-                                                        <i class="align-middle me-1" data-lucide="pencil"></i>
-                                                        Edit Post
-                                                    </a> --}}
                                                 <a class='dropdown-item btn-edit-post'
                                                     data-post-id="{{ $post->id }}" data-bs-toggle="modal"
                                                     data-bs-target="#edit-post">
@@ -379,17 +355,14 @@
                                             @else
                                                 <a class='dropdown-item btn-archive-post' href="#">
                                                     <i class="align-middle me-1" data-lucide="archive"></i>
-                                                    {{-- {{ route('posts.archive', $post->id) }} --}}
                                                     Archive Post
                                                 </a>
                                                 <a class='dropdown-item btn-save-feed' href="#">
                                                     <i class="align-middle me-1" data-lucide="save"></i>
-                                                    {{-- {{ route('posts.removeFromFeed', $post->id) }} --}}
                                                     Save Post
                                                 </a>
                                                 <a class='dropdown-item btn-remove-feed' href="#">
                                                     <i class="align-middle me-1" data-lucide="remove"></i>
-                                                    {{-- {{ route('posts.removeFromFeed', $post->id) }} --}}
                                                     Remove from Feed
                                                 </a>
                                             @endif
@@ -398,7 +371,6 @@
                                     </div>
                                     <p>{{ $post->content }}</p>
 
-                                    {{-- @include('modals.view-post') --}}
 
                                     @if ($post->post_media)
                                         <!-- Assuming you've renamed the column to 'media' -->
@@ -410,7 +382,8 @@
                                                     class="img-fluid pe-1" alt="{{ $post->content }}">
                                             </a>
                                         @elseif (in_array(pathinfo($post->post_media, PATHINFO_EXTENSION), ['mp4', 'mov', 'avi']))
-                                            <a href="{{ route('posts.show_videos', $post->id) }}" type="button" class="decoration-none border-0">
+                                            <a href="{{ route('posts.show_videos', $post->id) }}" type="button"
+                                                class="decoration-none border-0">
                                                 <video class="img-fluid pe-1" width="420" height="240" controls>
                                                     <source src="{{ asset('storage/' . $post->post_media) }}"
                                                         type="video/mp4">
@@ -420,22 +393,6 @@
                                         @endif
                                     @endif
 
-                                    {{-- @if ($post->image)
-                                            <button type="button" class="decoration-none border-0"
-                                                data-bs-toggle="modal" data-bs-target="#view-post">
-                                                <img src="{{ asset('storage/' . $post->image) }}"
-                                                    class="img-fluid pe-1" alt="{{ $post->content }}">
-                                            </button>
-                                            @php
-                                                $images = $post->images;
-                                            @endphp
-                                            @foreach ($images as $image)
-                                                <div class="col-6">
-                                                    <img src="{{ asset('storage/post_images/' . $image) }}"
-                                                        class="img-fluid pe-1" alt="Post Image">
-                                                </div>
-                                            @endforeach
-                                        @endif --}}
 
                                     <div class="d-flex align-items-center">
                                         <!-- Like Button -->
@@ -474,27 +431,14 @@
                                             @endif
                                         </button>
 
-                                        {{-- <button type="button" class="btn mt-1" data-bs-toggle="modal"
-                                            data-bs-target="#view-post" data-post-id="{{ $post->id }}"
-                                            data-post-content="{{ $post->content }}"
-                                            data-post-image="{{ asset('storage/' . $post->image) }}"
-                                            data-user-link="{{ route('profile.show', $post->user->username) }}"
-                                            data-user-name="{{ $post->user->username }}"
-                                            data-user-profile="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}">
-                                            <i class="align-middle" data-lucide="message-circle"></i>
-                                            @if ($commentCount > 0)
-                                                {{ $commentCount }}
-                                            @endif
-                                        </button> --}}
+
 
                                         <!-- Share Button -->
                                         <form action="{{ route('likes.store', $post->id) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn mt-1">
                                                 <i class="align-middle" data-lucide="forward"></i>
-                                                {{-- @if ($post->shareCount() > 0)
-                                                        {{ $post->shareCount() }}
-                                                    @endif --}}
+
                                             </button>
                                         </form>
                                     </div>
@@ -546,21 +490,7 @@
                 </div>
 
 
-                {{-- <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
-                            width="128" height="128" class="rounded-circle border border-light shadow-sm"
-                            alt="{{ Auth::user()->firstname }}">
-                        <h4 class="card-title mb-0">{{ $user->firstname . ' ' . $user->lastname }}</h4>
-                        <div class="text-muted mb-2">{{ $user->email }}</div>
-                        <div>
-                            <a class="btn btn-primary btn-sm"
-                                href="{{ route('users.follow', $user->id) }}">Follow</a>
-                            <a class="btn btn-primary btn-sm" href="{{ route('messages.create', $user->id) }}"><span
-                                    data-lucide="message-square"></span> Message</a>
-                        </div>
-                    </div>
-                </div> --}}
+
 
                 <!-- Following Section -->
                 <div class="card mb-3">
@@ -580,21 +510,7 @@
                         <h5 class="card-title mb-0">Following</h5>
                     </div>
                     <div class="card-body">
-                        {{-- @foreach ($user->following as $followedUser)
-                            <div class="d-flex align-items-start">
-                                <img src="{{ $followedUser->profile_picture ? asset('storage/' . $followedUser->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
-                                    width="30" height="30" class="rounded-circle me-2"
-                                    alt="{{ $followedUser->user->firstname }}">
-                                <div class="d-flex flex-column justify-content-center align-item-center">
-                                    <p class="my-1">
-                                        <strong> {{ $followedUser->user->username }}</strong>
-                                    </p>
-                                    <a class="btn btn-sm btn-outline-primary"
-                                        href="{{ route('users.unfollow', $followedUser->id) }}">Unfollow</a>
-                                </div>
-                            </div>
-                            <hr class="my-2" />
-                        @endforeach --}}
+
                     </div>
                 </div>
 
@@ -646,292 +562,505 @@
                 </div>
             </div>
         </div>
-        {{-- </div> --}}
 
-    </div>
+    </div> --}}
 
+    <div class="content">
+        <div class="pb-10">
+            <div class="row gy-3 gx-5 gx-xxl-6">
+                <div class="col-md-4 col-xl-3 d-none d-lg-block" style="margin-right: 2rem">
+                    <div class="card mb-5">
+                        <div class="card-header hover-actions-trigger position-relative mb-7" style="min-height: 130px; ">
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        document.getElementById('comment-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            var formData = new FormData(this);
-
-            axios.post('{{ route('comments.store') }}', formData)
-                .then(function(response) {
-                    var comment = response.data.comment;
-                    var user = response.data.user;
-
-                    var profilePicture = user.profile_picture ?
-                        `/storage/${user.profile_picture}` :
-                        `/storage/profile_pictures/default-user.png`;
-
-                    var commentCard = `
-                                        <div class="card mb-2">
-                                            <div class="card-body">
-                                                <a href="/profile/${user.username}" class="d-flex align-items-center">
-                                                    <img id="post-user-profile" src="${profilePicture}" width="30" height="30" class="rounded-circle me-2 border border-sm">
-                                                    <h5 class="mb-0 d-inline">${user.username}</h5>
-                                                </a>
-                                                <p class="card-text">${comment.content}</p>
-                                            </div>
-                                        </div>
-                                    `;
-
-                    document.getElementById('comments-container').insertAdjacentHTML('afterbegin', commentCard);
-
-                    document.querySelector('#comment-form textarea').value = '';
-                    // document.getElementById('content').textContent = '';
-
-                })
-                .catch(function(error) {
-                    console.error('Error posting comment:', error);
-                });
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-
-            document.querySelectorAll('.btn-delete-post').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const postId = this.getAttribute('data-id');
-                    const form = document.getElementById(`delete-form-${postId}`);
-
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!',
-                        reverseButtons: true
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
-
-            @if (session('success'))
-                Swal.fire({
-                    title: 'Success',
-                    text: "{{ session('success') }}",
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                })
-            @endif
-
-            const editButtons = document.querySelectorAll('.btn-edit-post');
-
-            editButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const postId = this.getAttribute('data-post-id');
-
-                    fetch(`/posts/${postId}/edit`)
-                        .then(response => response.json())
-                        .then(data => {
-
-                            document.getElementById('edit-user-username').textContent =
-                                data
-                                .user.username;
-                            document.getElementById('edit-user-profile-picture').src =
-                                data.user
-                                .profile_picture ?
-                                `/storage/${data.user.profile_picture}` :
-                                '/storage/profile_pictures/default-user.png';
-
-                            document.getElementById('edit-post-content').value = data
-                                .content;
-
-                            const postImageContainer = document.getElementById(
-                                'post-image-container');
-                            const postImage = document.getElementById(
-                                'edit-post-image');
-                            console.log(data.image);
-
-                            if (data.image) {
-                                postImage.src = `/storage/${data.image}`;
-                                postImageContainer.style.display = 'block';
-                            } else {
-                                postImage.src = '/storage/default-post.jpg';
-                                postImageContainer.style.display = 'block';
-                            }
-
-                            const form = document.getElementById('edit-post-form');
-                            form.action = `/posts/${postId}`;
-                        })
-                        .catch(error => console.error('Error fetching post:', error));
-                });
-            });
-
-            var modalElement = document.getElementById('view-post');
-            var commentForm = document.getElementById('comment-form');
-            var commentsContainer = document.getElementById('post-comments'); // Updated ID for comments section
-            var postIdInput = document.querySelector('input[name="post_id"]');
-            var editPostLink = document.getElementById('edit-post-link');
-            var deletePostForm = document.getElementById('delete-post-form');
-
-            modalElement.addEventListener('show.bs.modal', function(event) {
-                var button = event.relatedTarget;
-
-                var postId = button.getAttribute('data-post-id');
-                var postContent = button.getAttribute('data-post-content');
-                var postMedia = button.getAttribute('data-post-media');
-                var mediaType = button.getAttribute('data-media-type');
-                var userLink = button.getAttribute('data-user-link');
-                var userName = button.getAttribute('data-user-name');
-                var userProfile = button.getAttribute('data-user-profile');
-
-                // Set user info
-                modalElement.querySelector('#post-user-link').href = userLink;
-                modalElement.querySelector('#post-user-name').textContent = userName;
-                modalElement.querySelector('#post-user-profile').src = userProfile;
-
-                // Set post content
-                modalElement.querySelector('#post-content').textContent = postContent;
-
-                // Handle media display
-                var mediaContainer = modalElement.querySelector('#post-media-container');
-                mediaContainer.innerHTML = ''; // Clear previous media
-
-                if (postMedia) {
-                    if (['jpg', 'jpeg', 'png', 'gif'].includes(mediaType)) {
-                        var imgElement = document.createElement('img');
-                        imgElement.src = postMedia;
-                        imgElement.className = 'img-fluid'; // Bootstrap class for responsive images
-                        imgElement.alt = postContent;
-                        mediaContainer.appendChild(imgElement);
-                    } else if (['mp4', 'mov', 'avi'].includes(mediaType)) {
-                        var videoElement = document.createElement('video');
-                        videoElement.className = 'img-fluid';
-                        videoElement.controls = true;
-                        videoElement.style.width = '100%';
-
-                        var sourceElement = document.createElement('source');
-                        sourceElement.src = postMedia;
-                        sourceElement.type = 'video/mp4';
-
-                        videoElement.appendChild(sourceElement);
-                        mediaContainer.appendChild(videoElement);
-                    }
-                }
-
-                // Set up the form actions
-                postIdInput.value = postId;
-                editPostLink.href = `/posts/${postId}/edit`;
-                deletePostForm.action = `/posts/${postId}`;
-
-                // Fetch comments
-                fetch(`/posts/${postId}/comments`)
-                    .then(response => response.json())
-                    .then(data => {
-                        commentsContainer.innerHTML = '';
-                        data.comments.forEach(comment => {
-                            var commentElement = `
-                    <div class="card mb-2">
+                        </div>
                         <div class="card-body">
-                            <a href="/profile/${comment.user.username}" class="d-flex align-items-center">
-                                <img src="${comment.user.profile_picture ? '/storage/' + comment.user.profile_picture : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
-                                <h5 class="mb-0 d-inline">${comment.user.username}</h5>
-                            </a>
-                            <p class="card-text">${comment.content}</p>
+
                         </div>
                     </div>
-                `;
-                            commentsContainer.insertAdjacentHTML('beforeend', commentElement);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching comments:', error));
-            });
+                </div>
+                <div class="col-md-4 col-xl-5">
+                    <div class="card d-flex flex-column mb-5">
+                        <textarea class="form-control border-translucent rounded-bottom-0 border-0 flex-1 fs-8" rows="5" style="resize: none"
+                            placeholder="What's on your mind, {{ Auth::check() ? Auth::user()->firstname . ' ' . Auth::user()->lastname : 'Guest' }}">
+                        </textarea>
 
-
-
-
-            // Handle comment form submission
-            commentForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-
-                var formData = new FormData(commentForm);
-
-                fetch(commentForm.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRF-TOKEN': formData.get('_token')
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById('content').value = '';
-
-                            var newComment = `
-                                                <div class="card mb-2">
-                                                    <div class="card-body">
-                                                        <a href="/profile/${data.comment.user.username}" class="d-flex align-items-center">
-                                                            <img src="${data.comment.user.profile_picture ? '/storage/' + data.comment.user.profile_picture : '/storage/profile_pictures/default-user.png'}" width="30" height="30" class="rounded-circle me-2 border border-sm">
-                                                            <h5 class="mb-0 d-inline">${data.comment.user.username}</h5>
-                                                        </a>
-                                                        <p class="card-text">${data.comment.content}</p>
+                        <div class="card-footer p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button class="btn p-0 me-3">
+                                    <span class="fa-solid fa-image fs-8"></span>
+                                </button>
+                                <button class="btn p-0 me-3">
+                                    <span class="fa-solid fa-calendar-alt fs-8"></span>
+                                </button>
+                                <button class="btn p-0 me-3">
+                                    <span class="fa-solid fa-map-marker-alt fs-8"></span>
+                                </button>
+                                <button class="btn p-0 me-3">
+                                    <span class="fa-solid fa-tag fs-8"></span>
+                                </button>
+                                <div class="dropdown me-3 d-inline-block flex-1">
+                                    <button
+                                        class="btn p-0 dropdown-toggle dropdown-caret-none d-flex align-items-center"
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="fa-solid fa-globe-asia fs-8 me-1"></span>
+                                        <span class="me-1 lh-base d-none d-sm-block">Public</span>
+                                        <span class="fa-solid fa-caret-down fs-10 text-body-quaternary"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Public</a></li>
+                                        <li><a class="dropdown-item" href="#">Private</a></li>
+                                        <li><a class="dropdown-item" href="#">Draft</a></li>
+                                    </ul>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-primary btn-sm px-6 px-sm-8">Post</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-9">
+                        @foreach ($posts as $post)
+                            <div class="mb-5">
+                                <div class="card mb-4">
+                                    <div class="card-body p-3 p-sm-4">
+                                        <div class="border-translucent mb-3">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <a href="../../apps/social/profile.html">
+                                                    <div class="avatar avatar-xl  me-2">
+                                                        <img class="rounded-circle "
+                                                            src="{{ asset('storage/' . $post->user->profile_picture) }}"
+                                                            alt="" />
+                                                    </div>
+                                                </a>
+                                                <div class="flex-1">
+                                                    <a class="fw-bold mb-0 text-body-emphasis"
+                                                        href="../../apps/social/profile.html">{{ $post->user->firstname }}
+                                                        {{ $post->user->lastname }}</a>
+                                                    <p
+                                                        class="fs-10 mb-0 text-body-tertiary text-opacity-85 fw-semibold">
+                                                        35 mins ago
+                                                        <span
+                                                            class="fa-solid fa-circle text-body-quaternary text-opacity-50"
+                                                            data-fa-transform="shrink-10 down-2"></span>
+                                                        Consett, UK
+                                                        <span
+                                                            class="fa-solid fa-circle text-body-quaternary text-opacity-50"
+                                                            data-fa-transform="shrink-10 down-2"></span>
+                                                        <span class="fa-solid fa-earth-americas text-body"></span>
+                                                    </p>
+                                                </div>
+                                                <div class="btn-reveal-trigger">
+                                                    <button
+                                                        class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none d-flex btn-reveal"
+                                                        type="button" data-bs-toggle="dropdown" data-boundary="window"
+                                                        aria-haspopup="true" aria-expanded="false"
+                                                        data-bs-reference="parent">
+                                                        <span class="fas fa-ellipsis-h"></span>
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-end py-2">
+                                                        <a class="dropdown-item" href="#!">Edit</a>
+                                                        <a class="dropdown-item text-danger" href="#!">Delete</a>
+                                                        <a class="dropdown-item" href="#!">Download</a>
+                                                        <a class="dropdown-item" href="#!">Report abuse</a>
                                                     </div>
                                                 </div>
-                                            `;
-                            commentsContainer.insertAdjacentHTML('beforeend', newComment);
-                        } else {
-                            alert('Failed to post comment');
-                        }
-                    })
-                    .catch(error => console.error('Error posting comment:', error));
-            });
+                                            </div>
+                                            <p class="text-body-secondary">{{ $post->content }}</p>
+                                            <div class="row g-1 mb-5">
+                                                <div class="col-3">
+                                                    <a href="#!" data-gallery="gallery-posts-0">
+                                                        <img class="rounded h-100 w-100"
+                                                            src="{{ asset('storage/' . $post->post_media) }}"
+                                                            alt="..." />
+                                                    </a>
+                                                </div>
+                                                {{-- <div class="col-3">
+                                                <a href="../../assets/img/gallery/18.png" data-gallery="gallery-posts-0">
+                                                    <img class="rounded h-100 w-100" src="../../assets/img/gallery/18.png" alt="..." />
+                                                </a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a href="../../assets/img/gallery/19.png" data-gallery="gallery-posts-0">
+                                                    <img class="rounded h-100 w-100" src="../../assets/img/gallery/19.png" alt="..." />
+                                                </a>
+                                            </div> --}}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <button class="btn btn-link p-0 me-3 fs-10 fw-bolder" type="button">
+                                                <span class="fa-solid fa-heart me-1"></span>
+                                                {{ $post->user->likeCount() }} Like
+                                            </button>
+                                            <button class="btn btn-link text-body p-0 fs-10 me-3 fw-bolder"
+                                                type="button">
+                                                <span class="fa-solid fa-comment me-1"></span>
+                                                {{ $post->user->commentCount() }} Comments
+                                            </button>
+                                            <button class="btn btn-link text-body p-0 fs-10 me-2 fw-bolder"
+                                                type="button">
+                                                <span class="fa-solid fa-share me-1"></span>
+                                                56 Shares
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="bg-body-highlight border-top border-translucent p-3 p-sm-4">
+                                        @php
+                                            $limitedComments = $comments->slice(0, 3);
+                                        @endphp
 
+                                        @foreach ($limitedComments as $comment)
+                                            <div class="d-flex align-items-start">
+                                                <a href="{{ route('profile.show', $comment->user->username) }}">
+                                                    <div class="avatar avatar-m  me-2">
+                                                        <img class="rounded-circle "
+                                                            src="{{ asset('storage/' . $user->profile_picture) ?? asset('storage/profile_pictures/default-png') }}"
+                                                            alt="" />
+                                                    </div>
+                                                </a>
+                                                <div class="flex-1">
+                                                    <div class="d-flex align-items-center">
+                                                        <a class="fw-bold mb-0 text-body-emphasis"
+                                                            href="{{ route('profile.show', $comment->user->username) }}">
+                                                            {{ $comment->user->firstname }}
+                                                            {{ $comment->user->lastname }}
+                                                        </a>
+                                                        {{-- <span
+                                                            class="text-body-tertiary text-opacity-85 fw-semibold fs-10 ms-2">
+                                                            {{ customTimeDiff($comment->created_at) }}
+                                                        </span> --}}
+                                                    </div>
 
-            var popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-            var popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(
-                popoverTriggerEl));
+                                                    <p class="mb-0">{{ $comment->content }}</p>
+                                                    <span class="btn btn-link p-0 text-body fw-bolder mb-2">
+                                                        <span class="fw-bold fs-10">
+                                                            {{ customTimeDiff($comment->created_at) }}
+                                                        </span>
+                                                    </span>
+                                                    <button class="btn btn-link p-0 text-body fw-bolder mb-2"
+                                                        type="button">
+                                                        <span class="fw-bold fs-10">Like</span>
+                                                    </button>
+                                                    <button class="btn btn-link p-0 text-body fw-bolder mb-2"
+                                                        type="button">
+                                                        <span class="fa-solid fa-reply fs-10 me-1"></span>
+                                                        <span class="fw-bold fs-10">Reply</span>
+                                                    </button>
+                                                    {{-- <div class="d-flex align-items-start mb-3">
+                                                        <a href="../../apps/social/profile.html">
+                                                            <div class="avatar avatar-m  me-2">
+                                                                <img class="rounded-circle " src="../../assets/img//team/62.webp"
+                                                                    alt="" />
+                                                            </div>
+                                                        </a>
+                                                        <div class="flex-1">
+                                                            <div class="d-flex align-items-center">
+                                                                <a class="fw-bold mb-0 text-body-emphasis" href="../../apps/social/profile.html">
+                                                                    Zingko Kudobum
+                                                                </a>
+                                                                <span class="text-body-tertiary text-opacity-85 fw-semibold fs-10 ms-2">
+                                                                    5 mins ago
+                                                                </span>
+                                                            </div>
+                                                            <p class="mb-0">I am so clever that sometimes I don't
+                                                                understand a single word of what I am saying.</p>
+                                                        </div>
+                                                    </div> --}}
+                                                </div>
+                                            </div>
+                                        @endforeach
 
-            popoverTriggerList.forEach(trigger => {
-                trigger.addEventListener('mouseenter', function() {
-                    var popover = bootstrap.Popover.getInstance(trigger);
-                    if (popover) {
-                        popover.show();
-                    }
-                });
+                                        <div class="d-flex align-items-center">
+                                            <a href="../../apps/social/profile.html">
+                                                <div class="avatar avatar-m  me-2">
+                                                    <img class="rounded-circle "
+                                                        src="{{ asset('storage/' . $user->profile_picture) ?? asset('storage/profile_pictures/default.png') }}"
+                                                        alt="" />
+                                                </div>
+                                            </a>
+                                            <div class="flex-1">
+                                                <input class="form-control" type="text"
+                                                    placeholder="Comment as {{ $user->firstname }} {{ $user->lastname }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="text-center"><a class="btn btn-link fs-8 p-0" href="#!">Load more</a></div>
+                </div>
+                <div class="col-md-4 col-xl-3 d-none d-lg-block">
 
-                // trigger.addEventListener('mouseleave', function() {
-                //     var popover = bootstrap.Popover.getInstance(trigger);
-                //     if (popover) {
-                //         // Delay hiding to allow interaction with popover content
-                //         setTimeout(() => {
-                //             if (!popover._isShown) {
-                //                 popover.hide();
-                //             }
-                //         }, 100);
-                //     }
-                // });
-
-                trigger.addEventListener('shown.bs.popover', function() {
-                    var popoverElement = document.querySelector('.popover');
-                    if (popoverElement) {
-                        popoverElement.addEventListener('mouseenter', function() {
-                            // Keep popover visible when hovering over its content
-                            popover.show();
-                        });
-
-                        popoverElement.addEventListener('mouseleave', function() {
-                            // Hide popover when cursor leaves popover content
-                            popover.hide();
-                        });
-                    }
-                });
-            });
-
-        });
-    </script>
-
+                </div>
+            </div>
+        </div>
+        {{-- <div class="navbar-bottom d-lg-none">
+            <div class="nav"><a class="nav-link active" aria-current="page"
+                    href="../../apps/social/feed.html"><span class="fa-solid fa-home nav-icon"></span><span
+                        class="nav-label">Home</span></a><a class="nav-link"
+                    href="../../apps/social/profile.html"><span class="fa-solid fa-user nav-icon"></span><span
+                        class="nav-label">Profile</span></a><a class="nav-link" href="#!"><span
+                        class="fa-solid fa-image nav-icon"></span><span class="nav-label">Photos</span></a><a
+                    class="nav-link" href="../../apps/chat.html"><span
+                        class="fa-solid fa-message nav-icon"></span><span class="nav-label">Messages</span></a><a
+                    class="nav-link" href="../../apps/events/event-detail.html"><span
+                        class="fa-solid fa-calendar-days nav-icon"></span><span class="nav-label">Events</span></a>
+            </div>
+        </div> --}}
+    </div>
+    {{-- <div class="modal fade" id="searchBoxModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="true"
+        data-phoenix-modal="data-phoenix-modal" style="--phoenix-backdrop-opacity: 1;">
+        <div class="modal-dialog">
+            <div class="modal-content mt-15 rounded-pill">
+                <div class="modal-body p-0">
+                    <div class="search-box navbar-top-search-box" data-list='{"valueNames":["title"]}'
+                        style="width: auto;">
+                        <form class="position-relative" data-bs-toggle="search" data-bs-display="static"><input
+                                class="form-control search-input fuzzy-search rounded-pill form-control-lg"
+                                type="search" placeholder="Search..." aria-label="Search" />
+                            <span class="fas fa-search search-box-icon"></span>
+                        </form>
+                        <div class="btn-close position-absolute end-0 top-50 translate-middle cursor-pointer shadow-none"
+                            data-bs-dismiss="search"><button class="btn btn-link p-0" aria-label="Close"></button>
+                        </div>
+                        <div class="dropdown-menu border start-0 py-0 overflow-hidden w-100">
+                            <div class="scrollbar-overlay" style="max-height: 30rem;">
+                                <div class="list pb-3">
+                                    <h6 class="dropdown-header text-body-highlight fs-10 py-2">24 <span
+                                            class="text-body-quaternary">results</span></h6>
+                                    <hr class="my-0" />
+                                    <h6
+                                        class="dropdown-header text-body-highlight fs-9 border-translucent py-2 lh-sm">
+                                        Recently Searched </h6>
+                                    <div class="py-2"><a class="dropdown-item"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-normal text-body-highlight title"><span
+                                                        class="fa-solid fa-clock-rotate-left"
+                                                        data-fa-transform="shrink-2"></span> Store Macbook</div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-normal text-body-highlight title"> <span
+                                                        class="fa-solid fa-clock-rotate-left"
+                                                        data-fa-transform="shrink-2"></span> MacBook Air - 13″</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <hr class="my-0" />
+                                    <h6
+                                        class="dropdown-header text-body-highlight fs-9 border-translucent py-2 lh-sm">
+                                        Products</h6>
+                                    <div class="py-2"><a class="dropdown-item py-2 d-flex align-items-center"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="file-thumbnail me-2"><img
+                                                    class="h-100 w-100 object-fit-cover rounded-3"
+                                                    src="../../assets/img/products/60x60/3.png" alt="" />
+                                            </div>
+                                            <div class="flex-1">
+                                                <h6 class="mb-0 text-body-highlight title">MacBook Air - 13″</h6>
+                                                <p class="fs-10 mb-0 d-flex text-body-tertiary"><span
+                                                        class="fw-medium text-body-tertiary text-opactity-85">8GB
+                                                        Memory - 1.6GHz - 128GB Storage</span></p>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item py-2 d-flex align-items-center"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="file-thumbnail me-2"><img class="img-fluid"
+                                                    src="../../assets/img/products/60x60/3.png" alt="" />
+                                            </div>
+                                            <div class="flex-1">
+                                                <h6 class="mb-0 text-body-highlight title">MacBook Pro - 13″</h6>
+                                                <p class="fs-10 mb-0 d-flex text-body-tertiary"><span
+                                                        class="fw-medium text-body-tertiary text-opactity-85">30 Sep at
+                                                        12:30 PM</span></p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <hr class="my-0" />
+                                    <h6
+                                        class="dropdown-header text-body-highlight fs-9 border-translucent py-2 lh-sm">
+                                        Quick Links</h6>
+                                    <div class="py-2"><a class="dropdown-item"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-normal text-body-highlight title"><span
+                                                        class="fa-solid fa-link text-body"
+                                                        data-fa-transform="shrink-2"></span> Support MacBook House
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-normal text-body-highlight title"> <span
+                                                        class="fa-solid fa-link text-body"
+                                                        data-fa-transform="shrink-2"></span> Store MacBook″</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <hr class="my-0" />
+                                    <h6
+                                        class="dropdown-header text-body-highlight fs-9 border-translucent py-2 lh-sm">
+                                        Files</h6>
+                                    <div class="py-2"><a class="dropdown-item"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-normal text-body-highlight title"><span
+                                                        class="fa-solid fa-file-zipper text-body"
+                                                        data-fa-transform="shrink-2"></span> Library MacBook folder.rar
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-normal text-body-highlight title"> <span
+                                                        class="fa-solid fa-file-lines text-body"
+                                                        data-fa-transform="shrink-2"></span> Feature MacBook
+                                                    extensions.txt</div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-normal text-body-highlight title"> <span
+                                                        class="fa-solid fa-image text-body"
+                                                        data-fa-transform="shrink-2"></span> MacBook Pro_13.jpg</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <hr class="my-0" />
+                                    <h6
+                                        class="dropdown-header text-body-highlight fs-9 border-translucent py-2 lh-sm">
+                                        Members</h6>
+                                    <div class="py-2"><a class="dropdown-item py-2 d-flex align-items-center"
+                                            href="../../pages/members.html">
+                                            <div class="avatar avatar-l status-online  me-2 text-body">
+                                                <img class="rounded-circle " src="../../assets/img/team/40x40/10.webp"
+                                                    alt="" />
+                                            </div>
+                                            <div class="flex-1">
+                                                <h6 class="mb-0 text-body-highlight title">Carry Anna</h6>
+                                                <p class="fs-10 mb-0 d-flex text-body-tertiary">anna@technext.it</p>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item py-2 d-flex align-items-center"
+                                            href="../../pages/members.html">
+                                            <div class="avatar avatar-l  me-2 text-body">
+                                                <img class="rounded-circle " src="../../assets/img/team/40x40/12.webp"
+                                                    alt="" />
+                                            </div>
+                                            <div class="flex-1">
+                                                <h6 class="mb-0 text-body-highlight title">John Smith</h6>
+                                                <p class="fs-10 mb-0 d-flex text-body-tertiary">smith@technext.it</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <hr class="my-0" />
+                                    <h6
+                                        class="dropdown-header text-body-highlight fs-9 border-translucent py-2 lh-sm">
+                                        Related Searches</h6>
+                                    <div class="py-2"><a class="dropdown-item"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-normal text-body-highlight title"><span
+                                                        class="fa-brands fa-firefox-browser text-body"
+                                                        data-fa-transform="shrink-2"></span> Search in the Web MacBook
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item"
+                                            href="../../apps/e-commerce/landing/product-details.html">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fw-normal text-body-highlight title"> <span
+                                                        class="fa-brands fa-chrome text-body"
+                                                        data-fa-transform="shrink-2"></span> Store MacBook″</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <p class="fallback fw-bold fs-7 d-none">No Result Found.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="support-chat-container support-chat-bottom-lg">
+        <div class="container-fluid support-chat">
+            <div class="card bg-body-emphasis">
+                <div class="card-header d-flex flex-between-center px-4 py-3 border-translucent">
+                    <h5 class="mb-0 d-flex align-items-center gap-2">Demo widget<span
+                            class="fa-solid fa-circle text-success fs-11"></span></h5>
+                    <div class="btn-reveal-trigger"><button
+                            class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex"
+                            type="button" id="support-chat-dropdown" data-bs-toggle="dropdown"
+                            data-boundary="window" aria-haspopup="true" aria-expanded="false"
+                            data-bs-reference="parent"><span class="fas fa-ellipsis-h text-body"></span></button>
+                        <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown"><a
+                                class="dropdown-item" href="#!">Request a callback</a><a class="dropdown-item"
+                                href="#!">Search in chat</a><a class="dropdown-item" href="#!">Show
+                                history</a><a class="dropdown-item" href="#!">Report to Admin</a><a
+                                class="dropdown-item btn-support-chat" href="#!">Close Support</a></div>
+                    </div>
+                </div>
+                <div class="card-body chat p-0">
+                    <div class="d-flex flex-column-reverse scrollbar h-100 p-3">
+                        <div class="text-end mt-6"><a
+                                class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
+                                href="#!">
+                                <p class="mb-0 fw-semibold fs-9">I need help with something</p><span
+                                    class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
+                            </a><a
+                                class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
+                                href="#!">
+                                <p class="mb-0 fw-semibold fs-9">I can’t reorder a product I previously ordered</p>
+                                <span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
+                            </a><a
+                                class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
+                                href="#!">
+                                <p class="mb-0 fw-semibold fs-9">How do I place an order?</p><span
+                                    class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
+                            </a><a
+                                class="false d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
+                                href="#!">
+                                <p class="mb-0 fw-semibold fs-9">My payment method not working</p><span
+                                    class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
+                            </a></div>
+                        <div class="text-center mt-auto">
+                            <div class="avatar avatar-3xl status-online"><img
+                                    class="rounded-circle border border-3 border-light-subtle"
+                                    src="../../assets/img/team/30.webp" alt="" /></div>
+                            <h5 class="mt-2 mb-3">Eric</h5>
+                            <p class="text-center text-body-emphasis mb-0">Ask us anything – we’ll get back to you here
+                                or by email within 24 hours.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center gap-2 border-top border-translucent ps-3 pe-4 py-3">
+                    <div class="d-flex align-items-center flex-1 gap-3 border border-translucent rounded-pill px-4">
+                        <input class="form-control outline-none border-0 flex-1 fs-9 px-0" type="text"
+                            placeholder="Write message" /><label
+                            class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0"
+                            for="supportChatPhotos"><span class="fa-solid fa-image"></span></label><input
+                            class="d-none" type="file" accept="image/*" id="supportChatPhotos" /><label
+                            class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0"
+                            for="supportChatAttachment"> <span class="fa-solid fa-paperclip"></span></label><input
+                            class="d-none" type="file" id="supportChatAttachment" /></div><button
+                        class="btn p-0 border-0 send-btn"><span class="fa-solid fa-paper-plane fs-9"></span></button>
+                </div>
+            </div>
+        </div><button class="btn btn-support-chat p-0 border border-translucent"><span
+                class="fs-8 btn-text text-primary text-nowrap">Chat demo</span><span
+                class="ping-icon-wrapper mt-n4 ms-n6 mt-sm-0 ms-sm-2 position-absolute position-sm-relative"><span
+                    class="ping-icon-bg"></span><span class="fa-solid fa-circle ping-icon"></span></span><span
+                class="fa-solid fa-headset text-primary fs-8 d-sm-none"></span><span
+                class="fa-solid fa-chevron-down text-primary fs-7"></span></button>
+    </div> --}}
 </x-app-layout>

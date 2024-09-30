@@ -7,6 +7,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/theme.min.css',
+                'resources/js/phoenix.js',
                 'resources/js/app.js',
             ],
             refresh: true,
