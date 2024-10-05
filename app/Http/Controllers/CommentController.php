@@ -25,12 +25,12 @@ class CommentController extends Controller
         $comment->content = $validated['content'];
         $comment->save();
 
-        return response()->json([
-            'comment' => $comment,
-            'user' => $comment->user,
-        ]);
+        // return response()->json([
+        //     'comment' => $comment,
+        //     'user' => $comment->user,
+        // ]);
 
-        // return redirect()->route('home', $validated['post_id'])->with('success', 'Comment added successfully.');
+        return redirect()->route('home', $validated['post_id'])->with('success', 'Comment added successfully.');
     }
 
     // Delete a specific comment

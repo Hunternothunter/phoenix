@@ -39918,6 +39918,7 @@ html:not(.navbar-vertical-collapsed)
   color: var(--phoenix-quaternary-color);
   font-weight: 600;
 }
+
 .chat-search-box {
   -webkit-box-shadow: 0px 16px 80px -4px rgba(36, 40, 46, 0.3);
   box-shadow: 0px 16px 80px -4px rgba(36, 40, 46, 0.3);

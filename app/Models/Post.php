@@ -35,7 +35,10 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
-
+    public function commentCount()
+    {
+        return $this->comments()->count();
+    }
     /**
      * Get the likes for the post.
      */

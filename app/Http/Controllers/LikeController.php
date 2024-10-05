@@ -14,21 +14,40 @@ class LikeController extends Controller
     // Like a post
     public function store(Post $post)
     {
+        // $userId = Auth::id();
+        // $like = Like::where('post_id', $post->id)->where('user_id', $userId)->first();
+
+        // if ($like) {
+        //     // If the user already liked the post, remove the like
+        //     $like->delete();
+        //     return redirect()->route('home')->with('success', 'Post unliked successfully.');
+        // } else {
+        //     // If the user has not liked the post, add a new like
+        //     $like = new Like();
+        //     $like->post_id = $post->id;
+        //     $like->user_id = $userId;
+        //     $like->save();
+        //     return redirect()->route('home')->with('success', 'Post liked successfully.');
+        // }
+
         $userId = Auth::id();
         $like = Like::where('post_id', $post->id)->where('user_id', $userId)->first();
 
         if ($like) {
-            // If the user already liked the post, remove the like
             $like->delete();
-            return redirect()->route('home')->with('success', 'Post unliked successfully.');
+            $liked = false;
         } else {
-            // If the user has not liked the post, add a new like
             $like = new Like();
             $like->post_id = $post->id;
             $like->user_id = $userId;
             $like->save();
-            return redirect()->route('home')->with('success', 'Post liked successfully.');
+            $liked = true;
         }
+
+        return response()->json([
+            'liked' => $liked,
+            'likeCount' => $post->likes()->count()
+        ]);
     }
 
     // Unlike a post

@@ -353,6 +353,10 @@
                         <div class="col-auto">
                             <div class="d-flex flex-wrap mb-3 align-items-center">
                                 <h2 class="me-2">{{ $user->firstname }} {{ $user->lastname }}</h2>
+                                @if ($user->is_verified)
+                                    <span class="fa-solid fa-check-circle text-primary ms-1 me-2"
+                                        title="Verified"></span>
+                                @endif
                                 <span class="fw-semibold fs-7 text-body-emphasis">u/{{ $user->username }}</span>
                             </div>
                             <div class="mb-5">
@@ -398,27 +402,55 @@
                             <p class="fs-6 text-body-secondary">I love you babyyy</p>
                         </div>
                         <div class="col-auto">
+                            @php
+                                $isCurrentUser = Auth::id() === $user->id;
+                            @endphp
                             <div class="row g-2">
                                 <div class="col-auto order-xxl-2">
-                                    <button class="btn btn-primary lh-1">
-                                        <span class="fa-solid fa-user-plus me-2"></span>
-                                        Follow Request
-                                    </button>
+                                    @if ($isCurrentUser)
+                                        <button class="btn btn-primary lh-1">
+                                            <span class="fa-solid fa-plus me-2"></span>
+                                            Add to Story
+                                        </button>
+                                    @else
+                                        @php
+                                            $isFollowing = Auth::user()->isFollowing($user->id);
+                                        @endphp
+
+                                        <form action="{{ route('users.followToggle', $user->id) }}" method="post">
+                                            @csrf
+                                            @method('POST')
+
+                                            <button type="submit" class="btn btn-phoenix-primary lh-1">
+                                                <span
+                                                    class="fa-solid {{ $isFollowing ? 'fa-user-check' : 'fa-user-plus' }} fa-lg me-2"></span>
+                                                {{ $isFollowing ? 'Friends' : 'Add Friend' }}
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                                 <div class="col-auto order-xxl-1">
-                                    <a href="{{ route('messages.create', $user->id) }}"
-                                        class="btn btn-phoenix-primary lh-1">
-                                        <span class="fa-solid fa-message me-2"></span>
-                                        Send Message
-                                    </a>
+                                    @if ($isCurrentUser)
+                                        <a href="{{ route('profile.edit', $user->id) }}"
+                                            class="btn btn-phoenix-primary text-body lh-1">
+                                            <span class="fa-solid fa-pen fa-lg me-2"></span>
+                                            Edit Profile
+                                        </a>
+                                    @else
+                                        <a href="{{ route('messages.create', $user->id) }}">
+                                            <button class="btn btn-primary lh-1">
+                                                <span class="fa-brands fa-facebook-messenger fa-lg me-2"></span>
+                                                Message
+                                            </button>
+                                        </a>
+                                    @endif
                                 </div>
                                 <div class="col-auto">
                                     <div class="position-static">
                                         <button class="btn btn-phoenix-secondary lh-1" data-bs-toggle="dropdown"
                                             data-boundary="window" aria-haspopup="true" aria-expanded="false"
                                             data-bs-reference="parent">
-                                            <span class="fa-solid fa-chevron-down me-2"></span>
-                                            More
+                                            <span class="fa-solid fa-chevron-down"></span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item d-xl-none" href="#!">
@@ -436,7 +468,7 @@
                                             <a class="dropdown-item d-xl-none" href="#!">
                                                 <span
                                                     class="fa-solid fa-calendar-days fs-8 text-body-secondary me-2"></span>
-                                                <span> Events</span>
+                                                <span>Events</span>
                                             </a>
                                             <a class="dropdown-item d-xl-none" href="#!">
                                                 <span class="fa-solid fa-dice text-body-secondary me-2"></span>
@@ -457,7 +489,7 @@
                                             <a class="dropdown-item" href="#!">
                                                 <span
                                                     class="fa-solid fa-hand-holding-heart text-body-secondary me-2"></span>
-                                                <span>Get help</span>
+                                                <span>Get Help</span>
                                             </a>
                                             <a class="dropdown-item" href="#!">
                                                 <span class="fa-solid fa-flag text-body-secondary me-2"></span>
@@ -477,8 +509,8 @@
 
             </div>
 
-            <div class="row gy-3 gx-5 gx-xxl-6 gap-5">
-                <div class="col-xl-4 d-none d-xl-block">
+            <div class="row gy-3 gx-5 gx-xxl-6 gap-5 mt-2">
+                <div class="col-12 col-sm-6 col-md-4 d-none d-xl-block">
                     <div class="mb-8">
                         <div class="row g-0">
                             <div class="col-6 border-1 border-bottom border-translucent border-end py-2">
@@ -570,13 +602,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex pb-4 align-items-end border-bottom border-translucent border-dashed">
+                    {{-- <div class="d-flex pb-4 align-items-end border-bottom border-translucent border-dashed">
                         <h4 class="flex-1 mb-0">You and Erza</h4>
                         <a class="fw-bold fs-9" href="#!">
                             See details
                         </a>
-                    </div>
-                    <div class="row g-0 mb-5 mb-lg-0">
+                    </div> --}}
+                    {{-- <div class="row g-0 mb-5 mb-lg-0">
                         <div class="col-12 border-1 border-bottom border-translucent py-2">
                             <a class="btn btn-link px-0 fs-8 text-body-secondary text-primary-hover fw-semibold d-flex"
                                 href="#!">
@@ -612,9 +644,9 @@
                                 45 Common Check-ins
                             </a>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
-                <div class="col-5 col-xl-6">
+                <div class="col-12 col-sm-6 col-md-5 col-xl-6">
                     <div class="mb-9">
                         @foreach ($posts as $post)
                             <div class="mb-5">
@@ -622,18 +654,23 @@
                                     <div class="card-body p-3 p-sm-4">
                                         <div class="border-translucent mb-3">
                                             <div class="d-flex align-items-center mb-3">
-                                                <a href="../../apps/social/profile.html">
+                                                <a href="{{ route('profile.show', $post->user->username) }}">
                                                     <div class="avatar avatar-xl  me-2">
                                                         <img class="rounded-circle "
-                                                            src="{{ asset('storage/' . $post->user->profile_picture) }}"
+                                                            src="{{ asset('storage/' . $post->user->profile_picture) ?? asset('storage/profile_pictures/default-user.png') }}"
                                                             alt="" />
                                                     </div>
                                                 </a>
                                                 <div class="flex-1">
                                                     <a class="fw-bold mb-0 text-body-emphasis"
-                                                        href="../../apps/social/profile.html">
+                                                        href="{{ route('profile.show', $post->user->username) }}">
                                                         {{ $post->user->firstname }}
                                                         {{ $post->user->lastname }}
+                                                        @if ($post->user->is_verified)
+                                                            <span
+                                                                class="fa-solid fa-check-circle text-primary ms-1 fa-xs"
+                                                                title="Verified"></span>
+                                                        @endif
                                                     </a>
                                                     <p
                                                         class="fs-10 mb-0 text-body-tertiary text-opacity-85 fw-semibold">
@@ -658,40 +695,46 @@
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-end py-2">
                                                         <a class="dropdown-item" href="#!">Edit</a>
-                                                        <a class="dropdown-item text-danger" href="{{ route('posts.destroy', $post->id) }}">Delete</a>
+                                                        <a class="dropdown-item text-danger"
+                                                            href="{{ route('posts.destroy', $post->id) }}">Delete</a>
                                                         <a class="dropdown-item" href="#!">Download</a>
                                                         <a class="dropdown-item" href="#!">Report abuse</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <p class="text-body-secondary">{{ $post->content }}</p>
-                                            <div class="row g-1 mb-5">
-                                                <div class="col-3">
+                                            <div class="row g-1 mb-5 d-flex justify-content-center align-center">
+                                                <div class="col-10">
                                                     @if (in_array(pathinfo($post->post_media, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
-                                                        <a href="{{ route('posts.show_images', $post->id) }}" data-gallery="gallery-posts-0">
+                                                        <a href="{{ route('posts.show_images', $post->id) }}"
+                                                            data-gallery="gallery-posts-0">
                                                             <img class="rounded h-100 w-100"
-                                                                src="{{ asset('storage/' . $post->post_media) }}" alt="..." />
+                                                                src="{{ asset('storage/' . $post->post_media) }}"
+                                                                alt="..." />
                                                         </a>
                                                     @elseif (in_array(pathinfo($post->post_media, PATHINFO_EXTENSION), ['mp4', 'mov', 'avi']))
                                                         <a href="{{ route('posts.show_videos', $post->id) }}"
                                                             type="button" class="decoration-none border-0">
-                                                            <video class="img-fluid pe-1" width="420" height="240" controls>
-                                                                <source src="{{ asset('storage/' . $post->post_media) }}" type="video/mp4">
+                                                            <video class="img-fluid pe-1" width="1280"
+                                                                height="720" controls>
+                                                                <source
+                                                                    src="{{ asset('storage/' . $post->post_media) }}"
+                                                                    type="video/mp4">
                                                                 Your browser does not support the video tag.
                                                             </video>
                                                         </a>
                                                     @endif
                                                 </div>
                                                 {{-- <div class="col-3">
-                                            <a href="../../assets/img/gallery/18.png" data-gallery="gallery-posts-0">
-                                                <img class="rounded h-100 w-100" src="../../assets/img/gallery/18.png" alt="..." />
-                                            </a>
-                                        </div>
-                                        <div class="col-6">
-                                            <a href="../../assets/img/gallery/19.png" data-gallery="gallery-posts-0">
-                                                <img class="rounded h-100 w-100" src="../../assets/img/gallery/19.png" alt="..." />
-                                            </a>
-                                        </div> --}}
+                                                <a href="../../assets/img/gallery/18.png" data-gallery="gallery-posts-0">
+                                                    <img class="rounded h-100 w-100" src="../../assets/img/gallery/18.png" alt="..." />
+                                                </a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a href="../../assets/img/gallery/19.png" data-gallery="gallery-posts-0">
+                                                    <img class="rounded h-100 w-100" src="../../assets/img/gallery/19.png" alt="..." />
+                                                </a>
+                                            </div> --}}
                                             </div>
                                         </div>
                                         <div class="d-flex">
@@ -702,7 +745,7 @@
                                             <button class="btn btn-link text-body p-0 fs-10 me-3 fw-bolder"
                                                 type="button">
                                                 <span class="fa-solid fa-comment me-1"></span>
-                                                {{ $post->user->commentCount() }} Comments
+                                                {{ $post->commentCount() }} Comments
                                             </button>
                                             <button class="btn btn-link text-body p-0 fs-10 me-2 fw-bolder"
                                                 type="button">
@@ -712,16 +755,16 @@
                                         </div>
                                     </div>
                                     <div class="bg-body-highlight border-top border-translucent p-3 p-sm-4">
-                                        @php
-                                            $limitedComments = $comments->slice(0, 3);
-                                        @endphp
+                                        {{-- @php
+                                            $limitedComments = $post->comments->slice(0, 3);
+                                        @endphp --}}
 
-                                        @foreach ($limitedComments as $comment)
+                                        @foreach ($post->comments as $comment)
                                             <div class="d-flex align-items-start">
                                                 <a href="{{ route('profile.show', $comment->user->username) }}">
                                                     <div class="avatar avatar-m  me-2">
                                                         <img class="rounded-circle "
-                                                            src="{{ asset('storage/' . $user->profile_picture) ?? asset('storage/profile_pictures/default-png') }}"
+                                                            src="{{ asset('storage/' . $post->user->profile_picture) ?? asset('storage/profile_pictures/default-png') }}"
                                                             alt="" />
                                                     </div>
                                                 </a>
@@ -731,11 +774,16 @@
                                                             href="{{ route('profile.show', $comment->user->username) }}">
                                                             {{ $comment->user->firstname }}
                                                             {{ $comment->user->lastname }}
+                                                            @if ($comment->user->is_verified)
+                                                                <span
+                                                                    class="fa-solid fa-check-circle text-primary ms-1 fa-xs"
+                                                                    title="Verified"></span>
+                                                            @endif
                                                         </a>
                                                         {{-- <span
-                                                        class="text-body-tertiary text-opacity-85 fw-semibold fs-10 ms-2">
-                                                        {{ customTimeDiff($comment->created_at) }}
-                                                    </span> --}}
+                                                            class="text-body-tertiary text-opacity-85 fw-semibold fs-10 ms-2">
+                                                            {{ customTimeDiff($comment->created_at) }}
+                                                        </span> --}}
                                                     </div>
 
                                                     <p class="mb-0">{{ $comment->content }}</p>
@@ -754,31 +802,31 @@
                                                         <span class="fw-bold fs-10">Reply</span>
                                                     </button>
                                                     {{-- <div class="d-flex align-items-start mb-3">
-                                                    <a href="../../apps/social/profile.html">
-                                                        <div class="avatar avatar-m  me-2">
-                                                            <img class="rounded-circle " src="../../assets/img//team/62.webp"
-                                                                alt="" />
+                                                        <a href="../../apps/social/profile.html">
+                                                            <div class="avatar avatar-m  me-2">
+                                                                <img class="rounded-circle " src="../../assets/img//team/62.webp"
+                                                                    alt="" />
+                                                            </div>
+                                                        </a>
+                                                        <div class="flex-1">
+                                                            <div class="d-flex align-items-center">
+                                                                <a class="fw-bold mb-0 text-body-emphasis" href="../../apps/social/profile.html">
+                                                                    Zingko Kudobum
+                                                                </a>
+                                                                <span class="text-body-tertiary text-opacity-85 fw-semibold fs-10 ms-2">
+                                                                    5 mins ago
+                                                                </span>
+                                                            </div>
+                                                            <p class="mb-0">I am so clever that sometimes I don't
+                                                                understand a single word of what I am saying.</p>
                                                         </div>
-                                                    </a>
-                                                    <div class="flex-1">
-                                                        <div class="d-flex align-items-center">
-                                                            <a class="fw-bold mb-0 text-body-emphasis" href="../../apps/social/profile.html">
-                                                                Zingko Kudobum
-                                                            </a>
-                                                            <span class="text-body-tertiary text-opacity-85 fw-semibold fs-10 ms-2">
-                                                                5 mins ago
-                                                            </span>
-                                                        </div>
-                                                        <p class="mb-0">I am so clever that sometimes I don't
-                                                            understand a single word of what I am saying.</p>
-                                                    </div>
-                                                </div> --}}
+                                                    </div> --}}
                                                 </div>
                                             </div>
                                         @endforeach
 
                                         <div class="d-flex align-items-center">
-                                            <a href="../../apps/social/profile.html">
+                                            <a href="{{ route('profile.show', $user->username) }}">
                                                 <div class="avatar avatar-m  me-2">
                                                     <img class="rounded-circle "
                                                         src="{{ asset('storage/' . $user->profile_picture) ?? asset('storage/profile_pictures/default.png') }}"
@@ -788,6 +836,7 @@
                                             <div class="flex-1">
                                                 <input class="form-control" type="text"
                                                     placeholder="Comment as {{ $user->firstname }} {{ $user->lastname }}" />
+                                                <span class=""></span>
                                             </div>
                                         </div>
                                     </div>
@@ -797,7 +846,6 @@
                     </div>
                     <div class="text-center"><a class="btn btn-link fs-8 p-0" href="#!">Load more</a></div>
                 </div>
-                
             </div>
 
             {{-- <div class="navbar-bottom d-xl-none">

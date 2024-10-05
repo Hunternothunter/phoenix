@@ -42,14 +42,32 @@ class ProfileController extends Controller
      */
     public function show($identifier): View
     {
+        // $user = User::where('username', $identifier)
+        //     // ->orWhere('firstname', $identifier)
+        //     // ->orWhere('email', $identifier)
+        //     ->firstOrFail();
+        // $posts = Post::where('user_id', $user->id)->get();
+
+        // $comments = Comment::whereIn('post_id', $posts->pluck('id'))->get();
+
+
+        // return view('profile.show', [
+        //     'user' => $user,
+        //     'posts' => $posts,
+        //     'comments' => $comments,
+        // ]);
+
+
         $user = User::where('username', $identifier)
-            // ->orWhere('firstname', $identifier)
-            // ->orWhere('email', $identifier)
             ->firstOrFail();
-        $posts = Post::where('user_id', $user->id)->get();
 
-        $comments = Comment::whereIn('post_id', $posts->pluck('id'))->get();
+        $posts = Post::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc') // Order posts by created_at
+            ->get();
 
+        $comments = Comment::whereIn('post_id', $posts->pluck('id'))
+            ->orderBy('created_at', 'desc') // Order comments by created_at
+            ->get();
 
         return view('profile.show', [
             'user' => $user,
@@ -129,16 +147,40 @@ class ProfileController extends Controller
 
         // Validate the query if needed
         $request->validate([
-            'query' => 'required|string|min:3',
+            'query' => 'nullable|string|min:3',
         ]);
 
-        // Search users by name, or username
-        $users = User::where('firstname', 'like', "%$query%")
-            ->orWhere('middlename', 'like', "%$query%")
-            ->orWhere('lastname', 'like', "%$query%")
-            ->orWhere('username', 'like', "%$query%")
-            ->get();
+        // Initialize users as an empty collection if there's no query
+        $users = collect();
 
-        return view('profile.search_results', ['users' => $users, 'query' => $query]);
+        // Perform search if query is present
+        if ($query) {
+            $users = User::where('firstname', 'like', "%$query%")
+                ->orWhere('middlename', 'like', "%$query%")
+                ->orWhere('lastname', 'like', "%$query%")
+                ->orWhere('username', 'like', "%$query%")
+                ->get();
+        }
+
+        // Fetch recent searches
+        $recentSearches = session()->get('recent_searches', []);
+
+        // Add the current search to the recent searches
+        if ($query && !in_array($query, $recentSearches)) {
+            $recentSearches[] = $query;
+        }
+
+        // Limit to a certain number of recent searches (e.g., last 5)
+        if (count($recentSearches) > 5) {
+            array_shift($recentSearches); // Remove the oldest search
+        }
+
+        // Store the updated recent searches back into the session
+        session()->put('recent_searches', $recentSearches);
+
+        return response()->json([
+            'users' => $users,
+            'recentSearches' => $recentSearches,
+        ]);
     }
 }

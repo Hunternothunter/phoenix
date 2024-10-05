@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follower;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,16 @@ class PostController extends Controller
     // Show a specific post
     public function show($id)
     {
-        $post = Post::with(['comments.user'])->findOrFail($id);
+        $user = Auth::user();
+
+        // Fetch posts for the current user with their comments
+        $posts = Post::with('comments')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        return view('posts.show', compact('posts'));
+
 
         // return response()->json([
         //     'id' => $post->id,
@@ -42,9 +52,7 @@ class PostController extends Controller
         //         ];
         //     }),
         // ]);
-        return view('posts.show', compact('post'));
     }
-
 
     // Show the form to create a new post
     public function create()
@@ -83,10 +91,10 @@ class PostController extends Controller
         // return view('posts.edit', compact('post'));
         return response()->json([
             'content' => $post->content,
-            'image' => $post->image,
+            'post_media' => $post->post_media,
             'user' => [
                 'username' => $post->user->username,
-                'profile_pictures' => $post->user->profile_pictures
+                'profile_picture' => $post->user->profile_picture
             ]
         ]);
     }
@@ -96,14 +104,14 @@ class PostController extends Controller
     {
         $request->validate([
             'content' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'post_media' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:1000000',
         ]);
 
         $post->content = $request->input('content');
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
-            $post->image = $imagePath;
+        if ($request->hasFile('post_media')) {
+            $media_path = $request->file('post_media')->store('post_media', 'public');
+            $post->post_media = $media_path;
         }
 
         $post->save();
@@ -116,8 +124,8 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
-        return redirect()->back();
-        // return redirect()->route('home')->with('success', 'Post deleted successfully.');
+        // return redirect()->back();
+        return redirect()->route('home')->with('success', 'Post deleted successfully.');
     }
 
     public function getComments(Post $post)

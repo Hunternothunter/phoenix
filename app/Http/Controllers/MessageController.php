@@ -197,4 +197,25 @@ class MessageController extends Controller
             'users' => User::all() // Assuming you want to show all users in the list
         ]);
     }
+
+
+    public function getUserConversation()
+    {
+        // Fetch users, modify as needed
+        $users = User::all(); // Ensure this method returns the desired user collection
+
+        $currentUserId = Auth::id();
+        $messages = Message::where(function ($query) use ($currentUserId) {
+            $query->where('sender_id', $currentUserId)
+                ->orWhere('receiver_id', $currentUserId);
+        })
+            ->orderBy('created_at')
+            ->get()
+            ->groupBy('receiver_id'); // Group by receiver_id for easier access
+
+        return view('layouts.app', [
+            'users' => $users,
+            'messages' => $messages,
+        ]);
+    }
 }

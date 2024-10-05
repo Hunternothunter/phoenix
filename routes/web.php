@@ -86,30 +86,34 @@ use App\Services\UserService;
 
 // Home route
 Route::get('/', function () {
+    // Check if the user is authenticated
     if (Auth::check()) {
         $user = Auth::user();
-        $posts = Post::all();
-        $comments = Comment::all();
 
-        // Get IDs of users that the current user is following
-        // $followingUserIds = $user->followedUsers()->pluck('user_id'); // Get IDs of users being followed
+        // Get the IDs of users that the current user is following
         $followingUserIds = Follower::where('follower_id', $user->id)->pluck('user_id');
-        $posts = Post::with('user')->latest()->get();
 
-        // Fetch posts only from users that the current user is following
-        // $posts = Post::where('user_id', $followingUserIds)->orWhere('user_id', $user->id)->with('user')->latest()->get();
+        // Fetch posts from followed users and the authenticated user, including comments
+        $posts = Post::with('comments')
+            ->whereIn('user_id', $followingUserIds->merge([$user->id]))
+            ->latest() // Fetch latest posts
+            ->get();
+
+        // Initialize activities array (if needed)
         $activities = [];
 
-        $userService = new UserService(); // Create an instance of UserService
-        $allUsers = User::all(); // You may want to filter based on your logic
+        // Create an instance of UserService and fetch recommended users
+        $userService = new UserService();
+        $allUsers = User::all();
         $recommendedUserIds = $userService->recommendUsers($user, $allUsers);
-
         $recommendedUsers = User::whereIn('id', $recommendedUserIds)->get();
 
-        return view('dashboard', compact('posts', 'user', 'activities', 'recommendedUsers', 'comments'));
-    } else {
-        return view('auth.login');
+        // Return the dashboard view with relevant data
+        return view('dashboard', compact('posts', 'user', 'activities', 'recommendedUsers'));
     }
+
+    // Redirect to the login view if the user is not authenticated
+    return view('auth.login');
 })->name('home');
 
 
@@ -135,10 +139,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/search', [ProfileController::class, 'search'])->name('profile.search');
 
     // Post routes
-    Route::resource('posts', PostController::class);
+    // Route::resource('posts', PostController::class);
+    Route::get('posts', [PostController::class, 'index'])->name('posts.index');
+    Route::get('posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('posts', [PostController::class, 'store'])->name('posts.store');
+    Route::get('posts/{id}/show', [PostController::class, 'show'])->name('posts.show');
+    Route::get('posts/{id}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('posts/{id}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+
     Route::post('posts/{post}/likes', [LikeController::class, 'store'])->name('likes.store');
     Route::post('posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
-    Route::delete('posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
+    // Route::delete('posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
 
     // Comment routes
     Route::resource('comments', CommentController::class)->only(['store', 'destroy']);
@@ -171,6 +183,9 @@ Route::get('/video/{photo_id}', [PostController::class, 'show_videos'])->name('p
 // OTP verification routes
 Route::post('/send-otp', [VerificationController::class, 'sendOtp'])->name('send.otp');
 Route::post('/verify-otp', [VerificationController::class, 'verifyOtp'])->name('verify.otp');
+
+
+Route::get('/home/app/user', [MessageController::class, 'getUserConversation'])->name('messages.getUserConversation');
 
 // Auth routes
 require __DIR__ . '/auth.php';
