@@ -1,2 +1,11 @@
-node_modules
-node_modules
+/node_modules
+/vendor
+/.env
+
+# Ignore IDE files
+.idea
+.vscode
+
+# Ignore Laravel specific folders
+/public/storage
+/storage/*.key
