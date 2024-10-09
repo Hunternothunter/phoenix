@@ -68,6 +68,40 @@ class User extends Authenticatable
     {
         return $this->likes()->count();
     }
+    // public function friends()
+    // {
+    //     return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+    //         ->wherePivot('status', 'accepted')
+    //         ->withPivot('status');
+    // }
+
+    // public function friendRequests()
+    // {
+    //     return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
+    //         ->wherePivot('status', 'pending')
+    //         ->withPivot('status');
+    // }
+    public function sentFriendRequests()
+    {
+        return $this->hasMany(Friend::class, 'user_id')->where('status', 'pending');
+    }
+
+    public function receivedFriendRequests()
+    {
+        return $this->hasMany(Friend::class, 'friend_id')->where('status', 'pending');
+    }
+
+    public function friends()
+    {
+        return $this->hasMany(Friend::class, 'user_id')
+            ->where('status', 'accepted')
+            ->with('friend'); // Assuming 'friend' is defined in Friend model
+    }
+
+    public function friendsCount()
+    {
+        return $this->friends()->count();
+    }
 
     public function followers()
     {

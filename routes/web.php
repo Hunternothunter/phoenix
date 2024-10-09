@@ -76,8 +76,10 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\WatchController;
+use App\Http\Controllers\FriendController;
 use App\Models\Comment;
 use App\Models\Follower;
+use App\Models\Friend;
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
 use Illuminate\Foundation\Auth\User;
@@ -92,10 +94,11 @@ Route::get('/', function () {
 
         // Get the IDs of users that the current user is following
         $followingUserIds = Follower::where('follower_id', $user->id)->pluck('user_id');
-
+        $friends = Friend::where('friend_id', $user->id)->pluck('user_id');
+        
         // Fetch posts from followed users and the authenticated user, including comments
         $posts = Post::with('comments')
-            ->whereIn('user_id', $followingUserIds->merge([$user->id]))
+            ->whereIn('user_id', $friends->merge([$user->id]))
             ->latest() // Fetch latest posts
             ->get();
 
@@ -170,6 +173,11 @@ Route::middleware('auth')->group(function () {
     // Route::post('messages/{message}/mark-as-read', [MessageController::class, 'markAsRead'])->name('messages.markAsRead');
     Route::post('/messages/mark-read/{userId}', [MessageController::class, 'markMessagesAsRead'])->name('messages.markRead');
 });
+
+Route::post('/friends/request/{id}', [FriendController::class, 'sendRequest'])->name('friends.request');
+Route::post('/friends/accept/{id}', [FriendController::class, 'acceptRequest'])->name('friends.accept');
+Route::post('/friends/remove/{id}', [FriendController::class, 'removeFriend'])->name('friends.remove');
+
 
 // Watch routes
 Route::prefix('watch')->group(function () {

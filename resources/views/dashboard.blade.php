@@ -11,6 +11,13 @@
             height: 100%;
         }
 
+        .scrollable-card-body {
+            max-height: 100%;
+            /* Adjust height as needed */
+            overflow-y: auto;
+            /* Enables vertical scrolling */
+        }
+
         .hover-effect {
             background-color: transparent;
             border: none;
@@ -96,7 +103,7 @@
                             </textarea> --}}
                             <textarea id="promptTextarea" class="form-control border-translucent border-0 flex-1 fs-8" rows="4"
                                 placeholder="What's on your mind, {{ Auth::check() ? Auth::user()->firstname : 'Guest' }}"
-                                oninput="autoResize(this)"></textarea>
+                                oninput="autoResize(this)" name="content"></textarea>
 
                             <div id="preview" class="m-3 d-flex flex-wrap d-none"></div>
 
@@ -147,8 +154,8 @@
                                             <div class="d-flex align-items-center mb-3">
                                                 <a href="{{ route('profile.show', $post->user->username) }}">
                                                     <div class="avatar avatar-xl  me-2">
-                                                        <img class="rounded-circle "
-                                                            src="{{ asset('storage/' . $post->user->profile_picture) ?? asset('storage/profile_pictures/default-user.png') }}"
+                                                        <img class="rounded-circle border border-1"
+                                                            src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                                             alt="" />
                                                     </div>
                                                 </a>
@@ -279,7 +286,7 @@
                                                 <a href="{{ route('profile.show', $comment->user->username) }}">
                                                     <div class="avatar avatar-m  me-2">
                                                         <img class="rounded-circle "
-                                                            src="{{ asset('storage/' . $comment->user->profile_picture) ?? asset('storage/profile_pictures/default-png') }}"
+                                                            src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                                             alt="" />
                                                     </div>
                                                 </a>
@@ -338,8 +345,8 @@
                                         <div class="d-flex align-items-center">
                                             <a href="{{ route('profile.show', $user->username) }}">
                                                 <div class="avatar avatar-m  me-2">
-                                                    <img class="rounded-circle "
-                                                        src="{{ asset('storage/' . $user->profile_picture) ?? asset('storage/profile_pictures/default.png') }}"
+                                                    <img class="rounded-circle border border-1 "
+                                                        src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                                         alt="" />
                                                 </div>
                                             </a>
@@ -364,7 +371,7 @@
                     <div class="text-center"><a class="btn btn-link fs-8 p-0" href="#!">Load more</a></div>
                 </div>
 
-                <div class="col-md-4 col-xl-3 d-none d-lg-block right-column ms-5">
+                <div class="col-md-4 col-xl-3 d-none d-lg-block right-column ms-5 scrollable-card-body">
                     <div class="card mb-5 bg-transparent border-0">
                         <div class="card-header border-0 fw-semibold">
                             {{ __('Sponsored') }}
@@ -378,7 +385,34 @@
                             {{ __('Friend requests') }}
                         </div>
                         <div class="card-body pt-0 mt-0 top-0">
-                            {{ __('Something in here') }}
+                            <ul class="list-group">
+                                @if (Auth::check())
+                                    @forelse (Auth::user()->receivedFriendRequests as $request)
+                                        <li>
+                                            <div>
+                                                <img src="{{ $request->user->profile_picture ? asset('storage/' . $request->user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
+                                                    alt="{{ $request->user->firstname }}">
+                                                <span>{{ $request->user->firstname }}
+                                                    {{ $request->user->lastname }}</span>
+                                            </div>
+                                            <form action="{{ route('friends.accept', $request->user_id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <button type="submit">Accept</button>
+                                            </form>
+                                            <form action="{{ route('friends.remove', $request->user_id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <button type="submit">Reject</button>
+                                            </form>
+                                        </li>
+                                    @empty
+                                        <li class="list-group-item bg-transparent border-0">No friend requests</li>
+                                    @endforelse
+                                @else
+                                    <li class="list-group-item">Please log in to see your friend requests.</li>
+                                @endif
+                            </ul>
                         </div>
                     </div>
                     <div class="card mb-5 bg-transparent border-0">
@@ -394,7 +428,17 @@
                             {{ __('Contacts') }}
                         </div>
                         <div class="card-body pt-0 mt-0 top-0">
-                            {{ __('Something in here') }}
+                            <ul class="list-group">
+                                @foreach (Auth::user()->friends as $friend)
+                                    <a href="#!" class="text-decoration-none text-dark">
+                                        <li class="list-group-item bg-transparent border-0">
+                                            <img src="{{ $friend->friend->profile_picture ? asset('storage/' . $friend->friend->profile_picture) : asset('storage/profile_pictures/default-user.png') }}" class="rounded border-1" height="35" width="35"
+                                                alt="{{ $friend->friend->firstname }}">
+                                            {{ $friend->friend->firstname }} {{ $friend->friend->lastname }}
+                                        </li>
+                                    </a>
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 </div>

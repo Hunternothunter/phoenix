@@ -36,8 +36,13 @@
     "src": "resources/css/app.css",
     "isEntry": true
   },
+  "resources/css/theme.min.css": {
+    "file": "assets/theme-BuGzNpMD.css",
+    "src": "resources/css/theme.min.css",
+    "isEntry": true
+  },
   "resources/js/app.js": {
-    "file": "assets/app-D5q5iJdP.js",
+    "file": "assets/app-B9w2zY5q.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -54,5 +59,11 @@
       "assets/fa-v4compatibility-BX8XWJtE.woff2",
       "assets/fa-v4compatibility-B9MWI-E6.ttf"
     ]
+  },
+  "resources/js/phoenix.js": {
+    "file": "assets/phoenix-vEdwQYEw.js",
+    "name": "phoenix",
+    "src": "resources/js/phoenix.js",
+    "isEntry": true
   }
 }

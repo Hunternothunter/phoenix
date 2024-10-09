@@ -340,7 +340,7 @@
                             class="position-relative bg-body-quaternary rounded-circle cursor-pointer d-flex flex-center mb-xxl-7">
                             <div class="avatar avatar-5xl">
                                 <img class="rounded-circle rounded-circle img-thumbnail shadow-sm border-0"
-                                    src="{{ asset('storage/' . $user->profile_picture ?? 'profile_pictures/default-user.png') }}"
+                                    src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('storage/profile_pictures/default-user.png') }}"
                                     alt="" />
                             </div>
                             <label class="w-100 h-100 position-absolute z-1" for="upload-porfile-picture"></label>
@@ -367,9 +367,11 @@
                                         <a class="text-body-emphasis" href="#!">
                                             <span
                                                 class="fs-7 fw-bold text-body-tertiary text-opacity-85 text-body-emphasis-hover">
-                                                {{ $user->followersCount() }}
+                                                {{-- {{ $user->followersCount() }} --}}
+                                                {{ $user->friendsCount() }}
+                                                
                                                 <span class="fw-semibold ms-1 me-4">
-                                                    Followers
+                                                    Friends
                                                 </span>
                                             </span>
                                         </a>
@@ -417,7 +419,7 @@
                                             $isFollowing = Auth::user()->isFollowing($user->id);
                                         @endphp
 
-                                        <form action="{{ route('users.followToggle', $user->id) }}" method="post">
+                                        {{-- <form action="{{ route('users.followToggle', $user->id) }}" method="post">
                                             @csrf
                                             @method('POST')
 
@@ -426,7 +428,28 @@
                                                     class="fa-solid {{ $isFollowing ? 'fa-user-check' : 'fa-user-plus' }} fa-lg me-2"></span>
                                                 {{ $isFollowing ? 'Friends' : 'Add Friend' }}
                                             </button>
-                                        </form>
+                                        </form> --}}
+
+                                        @if ($user->friends->contains($user))
+                                            <!-- Remove friend button -->
+                                            <form action="{{ route('friends.remove', $user->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger">Remove Friend</button>
+                                            </form>
+                                        @elseif (Auth::user()->sentFriendRequests)
+                                            <!-- Accept friend request button -->
+                                            <form action="{{ route('friends.accept', $user->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success">Accept Friend</button>
+                                            </form>
+                                        @else
+                                            <!-- Send friend request button -->
+                                            <form action="{{ route('friends.request', $user->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-primary">Add Friend</button>
+                                            </form>
+                                        @endif
+
                                     @endif
                                 </div>
                                 <div class="col-auto order-xxl-1">
