@@ -177,6 +177,7 @@ Route::middleware('auth')->group(function () {
 Route::post('/friends/request/{id}', [FriendController::class, 'sendRequest'])->name('friends.request');
 Route::post('/friends/accept/{id}', [FriendController::class, 'acceptRequest'])->name('friends.accept');
 Route::post('/friends/remove/{id}', [FriendController::class, 'removeFriend'])->name('friends.remove');
+Route::get('/friends', [FriendController::class, 'getFriends'])->middleware('auth');
 
 
 // Watch routes

@@ -95,8 +95,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Friend::class, 'user_id')
             ->where('status', 'accepted')
-            ->with('friend'); // Assuming 'friend' is defined in Friend model
+            ->with('friend'); // Load the friend model
     }
+
+    // public function friends()
+    // {
+    //     return Friend::where(function ($query) {
+    //         $query->where('user_id', $this->id)
+    //             ->orWhere('friend_id', $this->id);
+    //     })->where('status', 'accepted')->with(['user', 'friend']);
+    // }
 
     public function friendsCount()
     {

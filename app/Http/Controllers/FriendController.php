@@ -22,8 +22,8 @@ class FriendController extends Controller
     public function acceptRequest($friend_id)
     {
         $friendRequest = Friend::where('user_id', $friend_id)
-                               ->where('friend_id', Auth::id())
-                               ->first();
+            ->where('friend_id', Auth::id())
+            ->first();
 
         if ($friendRequest) {
             $friendRequest->update(['status' => 'accepted']);
@@ -37,10 +37,10 @@ class FriendController extends Controller
     {
         $friendship = Friend::where(function ($query) use ($friend_id) {
             $query->where('user_id', Auth::id())
-                  ->where('friend_id', $friend_id);
+                ->where('friend_id', $friend_id);
         })->orWhere(function ($query) use ($friend_id) {
             $query->where('user_id', $friend_id)
-                  ->where('friend_id', Auth::id());
+                ->where('friend_id', Auth::id());
         })->first();
 
         if ($friendship) {
@@ -50,5 +50,18 @@ class FriendController extends Controller
 
         return back()->with('error', 'Friend not found.');
     }
-}
 
+    public function getFriends()
+    {
+        $friendsFromUser = User::user()->friends()->get();
+        $friendsFromFriend = Friend::where('friend_id', Auth::id())
+            ->where('status', 'accepted')
+            ->with('user')
+            ->get();
+
+        // Merge the two collections
+        $friends = $friendsFromUser->merge($friendsFromFriend);
+
+        return view('your-view', compact('friends'));
+    }
+}
